@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function Logo() {
-  return (
-    <div>
-      
-    </div>
-  )
+  return <h1 className="text-2xl font-semibold">📜TODO</h1>;
 }

@@ -1,12 +1,16 @@
+import { BrowserRouter, Route, Routes } from "react-router";
+import MainLayout from "./layouts/MainLayout";
+
 function App() {
   return (
-    <>
-      <div className="bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground">
-        <button className="bg-light-primary dark:bg-dark-primary text-white px-4 py-2 rounded-lg">
-          Click Me
-        </button>
-      </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<h1>this is home page</h1>} />
+          <Route path="about" element={<h1>this is about page page</h1>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -2,8 +2,17 @@ import React from "react";
 
 export default function Button({ children, type, onClick }) {
   const style = {
-    add: " px-3 py-1 rounded-md font-semibold  focus:border-light-border bg-light-primary dark:text-dark-foreground  ",
-    theam: "p-2 rounded-full bg-gray-200 dark:bg-gray-800",
+    add: " bg-light-primary dark:bg-dark-primary text-white px-4 py-2 rounded-lg",
+    theam:
+      "bg-light-secondary dark:bg-dark-secondary text-white px-4 py-2 rounded-lg",
+
+    Cancel:
+      "bg-light-secondary dark:bg-dark-secondary text-white px-4 py-2 rounded-lg",
+    delete: "bg-danger text-white px-4 py-2 rounded-lg",
+    success: "bg-success text-white px-4 py-2 rounded-lg",
+    warning: "bg-warning text-white px-4 py-2 rounded-lg",
+    submit:
+      "w-full bg-light-primary dark:bg-dark-primary text-white py-2 rounded-lg font-medium text-lg transition-all hover:opacity-90",
   };
   return (
     <button onClick={onClick} className={style[type]}>

@@ -6,25 +6,24 @@ export default {
     extend: {
       colors: {
         light: {
-          background: "#F3F4F6", // Light gray
-          foreground: "#111827", // Dark gray (text)
-          primary: "#2563EB", // Blue
-          secondary: "#E5E7EB", // Soft gray
-          accent: "#6366F1", // Indigo
-          border: "#D1D5DB", // Light border
-          card: "#FFFFFF", // White card background
-          danger: "#DC2626", // Red
+          background: "#f8f9fa", // Light mode background
+          foreground: "#212529", // Dark text on light mode
+          primary: "#007bff", // Main button color
+          secondary: "#6c757d", // Secondary button color
+          card: "#ffffff", // Card background
+          border: "#dee2e6", // Border color
         },
         dark: {
-          background: "#111827", // Dark gray background
-          foreground: "#F9FAFB", // Light gray (text)
-          primary: "#3B82F6", // Blue
-          secondary: "#1F2937", // Deep gray
-          accent: "#818CF8", // Indigo
-          border: "#374151", // Dark border
-          card: "#1E293B", // Dark card background
-          danger: "#EF4444", // Red
+          background: "#121212", // Dark mode background
+          foreground: "#f8f9fa", // Light text on dark mode
+          primary: "#1e90ff", // Main button color (softer blue in dark mode)
+          secondary: "#495057", // Secondary button color (grayish)
+          card: "#1c1c1e", // Card background in dark mode
+          border: "#343a40", // Border color in dark mode
         },
+        danger: "#dc3545", // Delete button color (Red)
+        success: "#28a745", // Success button color (Green)
+        warning: "#ffc107", // Warning messages (Yellow)
       },
     },
   },

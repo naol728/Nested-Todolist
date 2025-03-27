@@ -8,7 +8,7 @@ export default function MainLayout() {
       <header>
         <AppBar />
       </header>
-      <main>
+      <main className="bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground min-h-dvh p-6">
         <Outlet />
       </main>
     </>

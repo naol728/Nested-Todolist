@@ -13,6 +13,8 @@ export default function Button({ children, type, onClick }) {
     warning: "bg-warning text-white px-4 py-2 rounded-lg",
     submit:
       "w-full bg-light-primary dark:bg-dark-primary text-white py-2 rounded-lg font-medium text-lg transition-all hover:opacity-90",
+    close:
+      "mt-4 bg-light-primary dark:bg-dark-primary text-white  px-4 py-2 rounded-lg w-full",
   };
   return (
     <button onClick={onClick} className={style[type]}>

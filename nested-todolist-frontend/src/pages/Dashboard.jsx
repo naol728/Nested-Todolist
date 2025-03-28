@@ -28,7 +28,7 @@ const Dashboard = () => {
         className={`  md:flex flex-col mt-8 w-64 bg-light-card dark:bg-dark-card shadow-sm p-4 border-r border-light-border dark:border-dark-border transition-all 
           ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-          } md:w-52    z-50`}
+          } md:w-52    z-40`}
       >
         <h2 className="text-sm font-semibold  uppercase mb-3 text-light-secondary dark:text-dark-secondary">
           📂Collections

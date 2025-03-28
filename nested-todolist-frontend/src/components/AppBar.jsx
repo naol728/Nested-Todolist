@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "./Logo";
 import Button from "./Button";
 import Avatar from "./Avatar";
 import useDarkMode from "../hooks/useDarkMode";
 import { Switch } from "@headlessui/react";
 import { IoMdAdd } from "react-icons/io";
+import Modal from "./Modal";
 export default function AppBar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const [isopen, setIsopen] = useState(false);
 
   return (
     <nav className="shadow-lg flex items-center justify-between bg-light-background dark:bg-dark-background p-4 md:px-8 transition-all duration-300">
@@ -16,9 +18,17 @@ export default function AppBar() {
 
       <div className="flex items-center space-x-4">
         <div className="hidden sm:flex space-x-3">
-          <Button type="add">
+          <Button type="add" onClick={() => setIsopen(!isopen)}>
             <IoMdAdd />
           </Button>
+
+          {isopen ? (
+            <Modal isopen={isopen} setIsopen={setIsopen}>
+              this is the modal
+            </Modal>
+          ) : (
+            <></>
+          )}
         </div>
         <Avatar />
 

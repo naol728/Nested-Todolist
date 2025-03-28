@@ -7,7 +7,7 @@ export default function CollectionList({ collection }) {
         {collection.icon} {collection.name}
       </h3>
       <p className="text-light-secondary dark:text-dark-muted text-sm">
-        {collection.tasks_done}/{collection.tasks_total} done
+        {collection.completedTasks}/{collection.totalTasks} done
       </p>
     </div>
   );

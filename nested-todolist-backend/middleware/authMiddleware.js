@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User.js");
+const User = require("./../model/UserSchema");
 const dotenv = require("dotenv");
-
+const { varifyToken } = require("./../utils/jwtUtils");
 dotenv.config();
 
 exports.protect = async (req, res, next) => {
@@ -10,7 +10,7 @@ exports.protect = async (req, res, next) => {
   if (token && token.startsWith("Bearer")) {
     try {
       token = token.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = varifyToken(token);
       req.user = await User.findById(decoded.id).select("-password");
       next();
     } catch (error) {

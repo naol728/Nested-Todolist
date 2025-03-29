@@ -7,8 +7,6 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
   const dropdownRef = useRef(null);
   const addDropdownRef = useRef(null);
 
-  const isSubtask = task.parentId !== null;
-
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,23 +25,18 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
 
   return (
     <div
-      className={`p-4 rounded-lg shadow-md my-3 relative transition-colors duration-300 
-        ${
-          isSubtask
-            ? "border-l-4 border-blue-500 bg-gray-200 dark:bg-gray-800"
-            : "bg-gray-100 dark:bg-gray-900"
-        }`}
+      className={`p-4 w-full rounded-lg shadow-md my-3 relative transition-colors duration-300 
+      `}
     >
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-light-card dark:bg-dark-card px-4 py-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md">
         <h3
-          className={`font-semibold text-lg flex items-center transition-colors duration-300
-            ${
-              isSubtask
-                ? "text-blue-700 dark:text-blue-300"
-                : "text-black dark:text-white"
-            }`}
+          className={`font-semibold text-lg flex  transition-colors duration-300 flex-col
+          `}
         >
           {task.completed ? "✅" : "⬜"} {task.title}
+          <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">
+            {task.description}
+          </p>
         </h3>
 
         <div className="relative flex items-center gap-2">
@@ -95,12 +88,8 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
         </div>
       </div>
 
-      <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">
-        {task.description}
-      </p>
-
       {task.subtasks.length > 0 && (
-        <div className="mt-3 pl-4 border-l border-gray-400 dark:border-gray-600">
+        <div className="mt-3 pl-4   ">
           {task.subtasks.map((subtask) => (
             <TaskItem
               key={subtask.id}

@@ -1,3 +1,8 @@
 ###request to the task route 
 
 get http://localhost:5000/api/tasks/
+
+
+### request to the collection route 
+
+get http://localhost:5000/api/collections

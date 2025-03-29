@@ -1,15 +1,28 @@
 const express = require("express");
-const CollectionController = require("../controller/collectionController");
-
+const CollectionController = require("./../controller/collectionController");
+const authMiddleware = require("./../middleware/authMiddleware");
+const collectionMiddleware = require("./../middleware/collectionMiddleware");
 const router = express.Router();
 router
   .route("/")
-  .get(CollectionController.getAllCollections)
-  .post(CollectionController.postCollection);
+  .get(authMiddleware.protect, CollectionController.getAllCollections)
+  .post(authMiddleware.protect, CollectionController.postCollection);
 router
   .route("/:id")
-  .get(CollectionController.getCollection)
-  .patch(CollectionController.updateCollection)
-  .delete(CollectionController.deleteColection);
+  .get(
+    authMiddleware.protect,
+    collectionMiddleware.checkCollectionOwnership,
+    CollectionController.getCollection
+  )
+  .put(
+    authMiddleware.protect,
+    collectionMiddleware.checkCollectionOwnership,
+    CollectionController.updateCollection
+  )
+  .delete(
+    authMiddleware.protect,
+    collectionMiddleware.checkCollectionOwnership,
+    CollectionController.deleteColection
+  );
 
 module.exports = router;

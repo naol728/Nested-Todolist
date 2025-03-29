@@ -5,4 +5,12 @@ get http://localhost:5000/api/tasks/
 
 ### request to the collection route 
 
-get http://localhost:5000/api/collections
+get http://localhost:5000/api/collections/67e7f121e046af174d3aa403
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTdlZTQ1Y2U1OTdlZDVjNzNiMDhkMCIsImlhdCI6MTc0MzI1MzA2MSwiZXhwIjoxNzQ1ODQ1MDYxfQ.aN3kc2hzf-rXMbC5ONw8le97BrEpWzR-ippeWOlhykE
+Content-Type: application/json
+
+{
+  "name": "productivity",
+  "icon": "✍️",
+  "favorite": false
+}

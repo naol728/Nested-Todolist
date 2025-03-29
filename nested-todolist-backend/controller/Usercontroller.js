@@ -1,12 +1,13 @@
 const User = require("./../model/UserSchema");
 const jwt = require("jsonwebtoken");
+const {} = require("./../utils/jwtUtils");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+  return generateToken(id);
 };
 
 // Register a New User

@@ -1,19 +1,22 @@
 import React, { useState } from "react";
+
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import Toast from "../components/Toast";
 import AuthLayout from "../layouts/AuthLayout";
 import InputField from "../components/InputField";
-import { Link, useNavigate } from "react-router";
 import Button from "../components/Button";
 import { loginUser } from "../services/authService";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function Signin() {
   const [credential, setCredential] = useState({
     email: "",
     password: "",
   });
-  const dispatch = useDispatch();
+  const [toast, setToast] = useState(null);
   const { loading, error } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,20 +27,24 @@ export default function Signin() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const result = await dispatch(loginUser(credential));
-      if (result?.meta?.requestStatus === "fulfilled") {
-        navigate("/home");
-      } else {
-        console.error("Login failed:", result);
-      }
-    } catch (err) {
-      console.error("An error occurred during login:", err);
+    const result = await dispatch(loginUser(credential));
+    if (loginUser.fulfilled.match(result)) {
+      setToast({ message: "Login successful!", type: "success" });
+      setTimeout(() => navigate("/home"), 2000);
+    } else {
+      setToast({ message: error || "Invalid credentials", type: "error" });
     }
   };
-  console.log(error);
+
   return (
     <AuthLayout>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="w-full max-w-md bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl font-semibold text-center text-light-foreground dark:text-dark-foreground mb-6">
           Welcome Back 👋
@@ -48,6 +55,7 @@ export default function Signin() {
             label="Email Address"
             type="email"
             name="email"
+            required
             placeholder="Enter your email"
             value={credential.email}
             onChange={(e) => handleChange(e)}
@@ -57,13 +65,14 @@ export default function Signin() {
             label="Password"
             type="password"
             name="password"
+            required
             placeholder="Enter your password"
             value={credential.password}
             onChange={(e) => handleChange(e)}
           />
 
-          <Button type="submit" loading={loading}>
-            {loading ? "Loading..." : " Sign In"}
+          <Button type="submit" styles="submit" loading={loading}>
+            {loading ? "Signing..." : " Sign In"}
           </Button>
 
           <div className="text-sm text-center text-light-muted dark:text-dark-muted mt-3">

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Button({ children, type, onClick, loading }) {
+export default function Button({ children, type, onClick, loading, styles }) {
   const style = {
     add: " bg-light-primary dark:bg-dark-primary text-white px-4 py-2 rounded-lg",
     theam:
@@ -17,7 +17,12 @@ export default function Button({ children, type, onClick, loading }) {
       "mt-4 bg-light-primary dark:bg-dark-primary text-white  px-4 py-2 rounded-lg w-full",
   };
   return (
-    <button onClick={onClick} className={style[type]} disabled={loading}>
+    <button
+      onClick={onClick}
+      className={style[type]}
+      type={styles}
+      disabled={loading}
+    >
       {children}
     </button>
   );

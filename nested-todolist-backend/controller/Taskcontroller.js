@@ -1,5 +1,6 @@
 const Task = require("./../model/Task");
 const Collection = require("./../model/Collection");
+const mongoose = require("mongoose");
 exports.getallTasks = async (req, res) => {
   try {
     const { collectionId } = req.params;
@@ -61,22 +62,42 @@ exports.postTask = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getTask = async (req, res) => {
   try {
     const { taskId } = req.params;
 
-    // Find the task and ensure it belongs to the authenticated user
-    const task = await Task.findById(taskId).populate("subtasks");
+    const task = await Task.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(taskId) } }, // Find the main task
+      {
+        $graphLookup: {
+          from: "tasks",
+          startWith: "$subtasks",
+          connectFromField: "subtasks",
+          connectToField: "_id",
+          as: "allSubtasks",
+        },
+      },
+      {
+        $lookup: {
+          from: "tasks",
+          localField: "subtasks",
+          foreignField: "_id",
+          as: "subtasks",
+        },
+      },
+    ]);
 
-    if (!task) {
+    if (!task.length) {
       return res.status(404).json({ error: "Task not found" });
     }
 
-    res.status(200).json(task);
+    res.status(200).json(task[0]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.updateTask = async (req, res) => {
   try {
     const { taskId } = req.params;
@@ -98,7 +119,7 @@ exports.updateTask = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-exports.deleteTak = async (req, res) => {
+exports.deleteTask = async (req, res) => {
   try {
     const { taskId } = req.params;
 
@@ -116,6 +137,39 @@ exports.deleteTak = async (req, res) => {
     );
 
     res.status(200).json({ message: "Task deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.addSubtask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { title, description, priority, completed } = req.body;
+
+    // Find the parent task
+    const parentTask = await Task.findById(taskId);
+    if (!parentTask) {
+      return res.status(404).json({ error: "Parent task not found" });
+    }
+
+    // Create the new subtask
+    const subtask = new Task({
+      title,
+      description,
+      priority,
+      completed,
+      parentId: taskId, // Associate with parent
+      // collectionId: parentTask.parentId, // Maintain the same collectionId
+    });
+
+    // Save the subtask
+    await subtask.save();
+
+    // Add subtask ID to the parent task's `subtasks` array
+    parentTask.subtasks.push(subtask._id);
+    await parentTask.save();
+
+    res.status(201).json(subtask);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

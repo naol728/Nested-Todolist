@@ -15,6 +15,7 @@ router
     taskMiddleware.checkTaskOwnership,
     Taskcontroller.getTask
   )
+  .post(authMiddleware.protect, Taskcontroller.addSubtask)
   .put(
     authMiddleware.protect,
     taskMiddleware.checkTaskOwnership,
@@ -23,7 +24,7 @@ router
   .delete(
     authMiddleware.protect,
     taskMiddleware.checkTaskOwnership,
-    Taskcontroller.deleteTak
+    Taskcontroller.deleteTask
   );
 
 module.exports = router;

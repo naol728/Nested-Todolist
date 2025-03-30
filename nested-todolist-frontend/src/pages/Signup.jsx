@@ -5,20 +5,37 @@ import { Link } from "react-router";
 import Button from "../components/Button";
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [formdata, setFormdata] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormdata((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    if (formdata.password !== formdata.confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
 
     setError("");
-    console.log("User Registered:", { email, password });
+    console.log(
+      "User Registered:",
+      formdata.name,
+      formdata.email,
+      formdata.password
+    );
   };
 
   return (
@@ -30,27 +47,38 @@ export default function Signup() {
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <InputField
+            label="Name "
+            type="name"
+            name="name"
+            placeholder="Enter your email"
+            value={formdata.name}
+            onChange={(e) => handleChange(e)}
+          />
+          <InputField
             label="Email Address"
             type="email"
             placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formdata.email}
+            name="email"
+            onChange={(e) => handleChange(e)}
           />
 
           <InputField
             label="Password"
             type="password"
             placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formdata.password}
+            name="password"
+            onChange={(e) => handleChange(e)}
           />
 
           <InputField
             label="Confirm Password"
             type="password"
             placeholder="Re-enter your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={formdata.confirmPassword}
+            name="confirmPassword"
+            onChange={(e) => handleChange(e)}
           />
 
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
@@ -63,7 +91,7 @@ export default function Signup() {
               to="/"
               className="hover:underline text-light-primary dark:text-dark-primary"
             >
-              Sign In
+              Sign Up
             </Link>
           </div>
         </form>

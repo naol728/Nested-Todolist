@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const User = require("./../model/UserSchema");
+const User = require("./../model/User");
 const dotenv = require("dotenv");
-const { varifyToken } = require("./../utils/jwtUtils");
+const { verifyToken } = require("./../utils/jwtUtils");
 dotenv.config();
 
 exports.protect = async (req, res, next) => {
@@ -10,8 +10,8 @@ exports.protect = async (req, res, next) => {
   if (token && token.startsWith("Bearer")) {
     try {
       token = token.split(" ")[1];
-      const decoded = varifyToken(token);
-      req.user = await User.findById(decoded.id).select("-password");
+      const decoded = verifyToken(token);
+      req.user = await User.findById(decoded.userId).select("-password");
       next();
     } catch (error) {
       res.status(401).json({ message: "Not authorized, invalid token" });

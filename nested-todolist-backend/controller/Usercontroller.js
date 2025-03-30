@@ -1,13 +1,13 @@
-const User = require("./../model/UserSchema");
+const User = require("../model/User");
 const jwt = require("jsonwebtoken");
-const {} = require("./../utils/jwtUtils");
+const { generateTokenn } = require("./../utils/jwtUtils");
 const dotenv = require("dotenv");
 
 dotenv.config();
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return generateToken(id);
+  return generateTokenn(id);
 };
 
 // Register a New User

@@ -5,17 +5,9 @@ exports.checkTaskOwnership = async (req, res, next) => {
   try {
     const { taskId } = req.params;
     const task = await Task.findById(taskId);
-
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
-
-    if (task.userId.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({ error: "Not authorized to access this task" });
-    }
-
     req.task = task; // Attach task to request for next middleware or controller
     next();
   } catch (error) {

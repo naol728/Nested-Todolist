@@ -9,13 +9,13 @@ router
   .get(authMiddleware.protect, Taskcontroller.getallTasks)
   .post(authMiddleware.protect, Taskcontroller.postTask);
 router
-  .route("/:taskId")
+  .route("/single/:taskId")
   .get(
     authMiddleware.protect,
     taskMiddleware.checkTaskOwnership,
     Taskcontroller.getTask
   )
-  .patch(
+  .put(
     authMiddleware.protect,
     taskMiddleware.checkTaskOwnership,
     Taskcontroller.updateTask

@@ -1,6 +1,7 @@
 const Collection = require("./../model/Collection");
 const Task = require("./../model/Task");
 exports.getAllCollections = async (req, res) => {
+  
   try {
     const collections = await Collection.find({
       userId: req.user._id,
@@ -33,7 +34,6 @@ exports.getCollection = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
-    console.log(req.params);
     const collection = await Collection.findOne({
       _id: id,
       userId,

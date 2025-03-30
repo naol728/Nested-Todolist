@@ -1,16 +1,96 @@
-###request to the task route 
+### regiester user 
 
-get http://localhost:5000/api/tasks/
-
-
-### request to the collection route 
-
-get http://localhost:5000/api/collections/67e7f121e046af174d3aa403
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTdlZTQ1Y2U1OTdlZDVjNzNiMDhkMCIsImlhdCI6MTc0MzI1MzA2MSwiZXhwIjoxNzQ1ODQ1MDYxfQ.aN3kc2hzf-rXMbC5ONw8le97BrEpWzR-ippeWOlhykE
+post http://127.0.0.1:5000/api/users/register
 Content-Type: application/json
 
 {
-  "name": "productivity",
-  "icon": "✍️",
-  "favorite": false
+      "name":"mark zukerberg",
+      "email":"markzukerberg@gmail.com",
+      "password":"12345678"
 }
+
+### login user
+post http://127.0.0.1:5000/api/users/login
+Content-Type: application/json
+
+{
+      "email":"markzukerberg@gmail.com",
+      "password":"12345678"
+}
+
+### get the collections with specfic user
+
+get http://127.0.0.1:5000/api/collections
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+### post the collection with the specfic user
+post http://127.0.0.1:5000/api/collections
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+{
+"name":"sport",
+"icon":"🏂",
+"favorite":true
+}
+### get a single collection with the collection id
+get http://127.0.0.1:5000/api/collections/67e8fdb0579ce1e0b357b7e7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+### delete a single collection with the collection id
+delete http://127.0.0.1:5000/api/collections/67e9070f579ce1e0b357b804
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+### update a single collection with the collection id 
+put http://127.0.0.1:5000/api/collections/67e8fdb0579ce1e0b357b7e7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+{
+"name":"sport",
+"icon":"🏂",
+"favorite":false
+}
+
+### add a task to the collection 
+post http://127.0.0.1:5000/api/tasks/67e8fdb0579ce1e0b357b7e7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+{
+  "_id": "67e9009a579ce1e0b357b7f1",
+  "title": "go to gym",
+  "description": "do 20 push up",
+  "priority": "medium",
+  "completed": false,
+  "subtasks": [],
+  "__v": 0
+}
+
+### get a single task
+get http://127.0.0.1:5000/api/tasks/single/67e911e2d24252eb1ea230d1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+### update a single task 
+put http://127.0.0.1:5000/api/tasks/single/67e9009a579ce1e0b357b7f1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014
+
+{
+  "_id": "67e9009a579ce1e0b357b7f1",
+  "title": "go to gym",
+  "description": "do 20 push up",
+  "priority": "medium",
+  "completed": false,
+  "subtasks": [],
+  "__v": 0
+}
+
+### delete a single task 
+delete http://127.0.0.1:5000/api/tasks/single/67e9009a579ce1e0b357b7f1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4ZjJjODdkYWFhZGM3YjI1ZDRjMzAiLCJpYXQiOjE3NDMzMjA5MDQsImV4cCI6MTc0MzkyNTcwNH0.mY4rlrybX2kJJpaVrNsxKa5Waeb8c4vWphiD6dWX014

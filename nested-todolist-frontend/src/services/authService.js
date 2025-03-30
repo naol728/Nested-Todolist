@@ -3,20 +3,10 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const AUTH_ENDPOINT = "/users";
 
-export const registerUser = createAsyncThunk(
-  "auth/register",
-  async (userData, rejectWithValue) => {
-    try {
-      const response = await apiClient.post(
-        `${AUTH_ENDPOINT}/register`,
-        userData
-      );
-      return response.data;
-    } catch (err) {
-      rejectWithValue(err.response?.data || "Registration failed");
-    }
-  }
-);
+export const registerUser = async (userData) => {
+  const response = await apiClient.post(`${AUTH_ENDPOINT}/register`, userData);
+  return response.data;
+};
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",

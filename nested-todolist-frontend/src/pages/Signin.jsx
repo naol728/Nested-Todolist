@@ -6,7 +6,7 @@ import Toast from "../components/Toast";
 import AuthLayout from "../layouts/AuthLayout";
 import InputField from "../components/InputField";
 import Button from "../components/Button";
-import { loginUser } from "../services/authService";
+import { loginUser } from "./../features/authSlice";
 
 export default function Signin() {
   const [credential, setCredential] = useState({

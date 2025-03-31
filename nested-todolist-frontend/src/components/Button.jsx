@@ -11,6 +11,7 @@ export default function Button({ children, type, onClick, loading, styles }) {
     delete: "bg-danger text-white px-4 py-2 rounded-lg",
     success: "bg-success text-white px-4 py-2 rounded-lg",
     warning: "bg-warning text-white px-4 py-2 rounded-lg",
+    danger: "bg-danger text-white px-4 py-2 rounded-lg",
     submit:
       "w-full bg-light-primary dark:bg-dark-primary text-white py-2 rounded-lg font-medium text-lg transition-all hover:opacity-90",
     close:

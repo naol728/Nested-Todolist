@@ -6,12 +6,24 @@ import useDarkMode from "../hooks/useDarkMode";
 import { Switch } from "@headlessui/react";
 import { IoMdAdd } from "react-icons/io";
 import Modal from "./Modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import Logout from "./Logout";
+import { useNavigate } from "react-router";
+import { logoutUser } from "../features/authSlice";
 export default function AppBar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
   const [isopen, setIsopen] = useState(false);
+  const [openlogout, setOpenlogout] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    setOpenlogout(!openlogout);
+    setTimeout(() => navigate("/"), 2000);
+    window.location.href = "/";
+  };
   return (
     <nav className="shadow-lg flex items-center justify-between bg-light-background dark:bg-dark-background p-4 md:px-8 transition-all duration-300">
       <div className="flex items-center space-x-2">
@@ -34,7 +46,15 @@ export default function AppBar() {
                 <></>
               )}
             </div>
-            <Avatar />
+            <Avatar onClick={() => setOpenlogout(!openlogout)} />
+
+            {openlogout && (
+              <Logout
+                handleLogout={handleLogout}
+                setOpenlogout={setOpenlogout}
+                openlogout={openlogout}
+              />
+            )}
           </>
         )}
 

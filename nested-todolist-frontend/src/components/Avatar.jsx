@@ -1,11 +1,14 @@
-export default function Avatar({ src, alt }) {
+export default function Avatar({ src, alt, onClick }) {
   return (
-    <div className="flex items-center space-x-3">
+    <div
+      className="flex items-center space-x-3 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative w-10 h-10">
         <img
           src={
             src ||
-            "https://media.licdn.com/dms/image/v2/D4E03AQHJHHbVxpFVeA/profile-displayphoto-shrink_100_100/B4EZWZFqN9HMAU-/0/1742030154552?e=1748476800&v=beta&t=IFd64FFBADswjn6ekTmH7HBJZvMVlfCZ6XVEwLd-IVM"
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRe3oPvKsA05otgZYGFZmxk5WHLYTFKWOFaNA&s"
           }
           alt={alt || "User Avatar"}
           className="w-full h-full rounded-full border-2 border-light-border dark:border-dark-border object-cover"

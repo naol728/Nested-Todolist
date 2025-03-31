@@ -7,8 +7,10 @@ export const getAllCollections = async () => {
   return response.data;
 };
 
-export const getCollection = async (collectionId) => {
-  const response = await apiClient.get(`${COLLECTION_ENDPOINT}/${collectionId}`);
+export const togglefavorite = async (collectionId, favorite) => {
+  const response = await apiClient.put(`/collections/${collectionId}`, {
+    favorite: !favorite,
+  });
   return response.data;
 };
 
@@ -17,12 +19,24 @@ export const createCollection = async (collectionData) => {
   return response.data;
 };
 
+export const getCollection = async (collectionId) => {
+  const response = await apiClient.get(
+    `${COLLECTION_ENDPOINT}/${collectionId}`
+  );
+  return response.data;
+};
+
 export const updateCollection = async (collectionId, collectionData) => {
-  const response = await apiClient.put(`${COLLECTION_ENDPOINT}/${collectionId}`, collectionData);
+  const response = await apiClient.put(
+    `${COLLECTION_ENDPOINT}/${collectionId}`,
+    collectionData
+  );
   return response.data;
 };
 
 export const deleteCollection = async (collectionId) => {
-  const response = await apiClient.delete(`${COLLECTION_ENDPOINT}/${collectionId}`);
+  const response = await apiClient.delete(
+    `${COLLECTION_ENDPOINT}/${collectionId}`
+  );
   return response.data;
 };

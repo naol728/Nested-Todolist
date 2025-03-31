@@ -27,12 +27,18 @@ export default function Signin() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dispatch(loginUser(credential));
-    if (loginUser.fulfilled.match(result)) {
-      setToast({ message: "Login successful!", type: "success" });
-      setTimeout(() => navigate("/home"), 2000);
-    } else {
-      setToast({ message: error || "Invalid credentials", type: "error" });
+    try {
+      console.log("Dispatching loginUser...");
+      const result = await dispatch(loginUser(credential));
+      console.log("Dispatch result:", result);
+      if (loginUser.fulfilled.match(result)) {
+        setToast({ message: "Login successful!", type: "success" });
+        navigate("/home");
+      } else {
+        setToast({ message: error || "Invalid credentials", type: "error" });
+      }
+    } catch (err) {
+      setToast({ message: err || "Error Ocurred", type: "error" });
     }
   };
 

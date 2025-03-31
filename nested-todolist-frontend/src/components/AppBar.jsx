@@ -6,24 +6,16 @@ import useDarkMode from "../hooks/useDarkMode";
 import { Switch } from "@headlessui/react";
 import { IoMdAdd } from "react-icons/io";
 import Modal from "./Modal";
-import { useDispatch, useSelector } from "react-redux";
-
 import Logout from "./Logout";
-import { useNavigate } from "react-router";
-import { logoutUser } from "../features/authSlice";
+import { useSelector } from "react-redux";
+import CollectionForm from "./CollectionForm";
+
 export default function AppBar() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
-  const [isopen, setIsopen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [openlogout, setOpenlogout] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    setOpenlogout(!openlogout);
-    setTimeout(() => navigate("/"), 2000);
-    window.location.href = "/";
-  };
+
   return (
     <nav className="shadow-lg flex items-center justify-between bg-light-background dark:bg-dark-background p-4 md:px-8 transition-all duration-300">
       <div className="flex items-center space-x-2">
@@ -34,26 +26,21 @@ export default function AppBar() {
         {isAuthenticated && (
           <>
             <div className="hidden sm:flex space-x-3">
-              <Button type="add" onClick={() => setIsopen(!isopen)}>
+              <Button type="add" onClick={() => setIsModalOpen(true)}>
                 <IoMdAdd />
               </Button>
-
-              {isopen ? (
-                <Modal isopen={isopen} setIsopen={setIsopen}>
-                  this is the modal
-                </Modal>
-              ) : (
-                <></>
-              )}
+              <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                title="Add Collection"
+              >
+                <CollectionForm onClose={() => setIsModalOpen(false)} />
+              </Modal>
             </div>
             <Avatar onClick={() => setOpenlogout(!openlogout)} />
 
             {openlogout && (
-              <Logout
-                handleLogout={handleLogout}
-                setOpenlogout={setOpenlogout}
-                openlogout={openlogout}
-              />
+              <Logout setOpenlogout={setOpenlogout} openlogout={openlogout} />
             )}
           </>
         )}

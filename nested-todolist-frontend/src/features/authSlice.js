@@ -11,6 +11,7 @@ const initialState = {
   loading: false,
   error: null,
 };
+
 export const authenticateUser = createAsyncThunk(
   "auth/authenticate",
   async (_, { rejectWithValue }) => {
@@ -33,7 +34,7 @@ export const register = createAsyncThunk(
   }
 );
 export const logoutUser = createAsyncThunk(
-  "auth/logout",
+  "auth/logoutUser",
   async (_, thunkAPI) => {
     try {
       localStorage.removeItem("token");
@@ -45,19 +46,16 @@ export const logoutUser = createAsyncThunk(
   }
 );
 export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (credentials, thunkAPI) => {
+  "auth/loginUser",
+  async (credentials, rejectWithValue) => {
     try {
       const response = await loginuser(credentials);
       console.log(response);
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response));
-
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Login failed"
-      );
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
   }
 );

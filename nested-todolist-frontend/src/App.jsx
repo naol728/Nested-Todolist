@@ -17,7 +17,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(authenticateUser()); // Auto-authenticate user on page load
+    dispatch(authenticateUser());
   }, [dispatch]);
   return (
     <BrowserRouter>

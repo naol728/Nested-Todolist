@@ -29,7 +29,7 @@ export default function Signup() {
   };
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formdata.password !== formdata.confirmPassword) {
       setError("Passwords do not match!");
@@ -42,7 +42,7 @@ export default function Signup() {
       password: "",
       confirmPassword: "",
     });
-    const resultAction = dispatch(register(formdata));
+    const resultAction = await dispatch(register(formdata));
     if (register.fulfilled.match(resultAction)) {
       setToast({ message: "User registered successfully!", type: "success" });
       setTimeout(() => navigate("/"), 2000); // Redirect after 2s

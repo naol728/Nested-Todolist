@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  loginUser,
   authenticate,
+  loginuser,
   registerUser,
 } from "./../services/authService";
 
@@ -15,7 +15,7 @@ export const authenticateUser = createAsyncThunk(
   "auth/authenticate",
   async (_, { rejectWithValue }) => {
     try {
-      return await authenticate(); // Calls API /users/auth
+      return await authenticate();
     } catch (error) {
       return rejectWithValue(error.response?.data || "Authentication failed");
     }
@@ -25,11 +25,39 @@ export const register = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-
-      const response =await registerUser(userData);
+      const response = await registerUser(userData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Registration failed");
+    }
+  }
+);
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      return true;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error || "Logout failed");
+    }
+  }
+);
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await loginuser(credentials);
+      console.log(response);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response));
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
   }
 );
@@ -40,8 +68,8 @@ const authSlice = createSlice({
     loginSuccess: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = true;
-      localStorage.setItem("user", JSON.stringify(action.payload)); // Save user
-      localStorage.setItem("token", action.payload.token); // Save token
+      localStorage.setItem("user", JSON.stringify(action.payload));
+      localStorage.setItem("token", action.payload.token);
     },
     logout: (state) => {
       state.user = null;

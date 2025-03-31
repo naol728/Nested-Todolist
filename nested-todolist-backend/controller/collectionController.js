@@ -1,16 +1,42 @@
 const Collection = require("./../model/Collection");
 const Task = require("./../model/Task");
+
 exports.getAllCollections = async (req, res) => {
-  
   try {
-    const collections = await Collection.find({
-      userId: req.user._id,
-    }).populate("tasks");
+    const collections = await Collection.aggregate([
+      {
+        $match: { userId: req.user._id }, // Match collections for the logged-in user
+      },
+      {
+        $lookup: {
+          from: "tasks", // The name of the Task collection in MongoDB
+          localField: "tasks",
+          foreignField: "_id",
+          as: "tasks",
+        },
+      },
+      {
+        $addFields: {
+          totalTasks: { $size: "$tasks" }, // Calculate the total number of tasks
+          completedTasks: {
+            $size: {
+              $filter: {
+                input: "$tasks",
+                as: "task",
+                cond: { $eq: ["$$task.completed", true] }, // Count only completed tasks
+              },
+            },
+          },
+        },
+      },
+    ]);
+
     res.status(200).json(collections);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.postCollection = async (req, res) => {
   try {
     const { name, icon, favorite } = req.body;

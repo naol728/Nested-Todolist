@@ -1,86 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CollectionList from "../components/CollectionList";
 import { FiStar } from "react-icons/fi";
 import { Switch } from "@headlessui/react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCapitalizedFirstName } from "../utils/formatString";
-
-const collectionsData = [
-  {
-    id: 1,
-    name: "Design",
-    icon: "🎨",
-    favorite: false,
-    totalTasks: 2,
-    completedTasks: 1,
-    tasks: [
-      {
-        id: 1,
-        title: "Create wireframe",
-        description: "Design the main UI wireframe in Figma.",
-        completed: false,
-        createdAt: "2024-03-01T10:30:00Z",
-        dueDate: "2024-03-05T23:59:00Z",
-        priority: "high",
-        tags: ["UI/UX", "Figma"],
-      },
-      {
-        id: 2,
-        title: "Update brand guidelines",
-        description: "Ensure the brand colors and typography are updated.",
-        completed: true,
-        createdAt: "2024-02-20T12:15:00Z",
-        dueDate: "2024-02-25T18:00:00Z",
-        priority: "medium",
-        tags: ["Branding", "Design System"],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Personal",
-    icon: "🧘",
-    favorite: true,
-    totalTasks: 2,
-    completedTasks: 1,
-    tasks: [
-      {
-        id: 1,
-        title: "Go to the gym",
-        description: "Workout session at 7 AM.",
-        completed: false,
-        createdAt: "2024-03-02T07:00:00Z",
-        dueDate: "2024-03-02T08:30:00Z",
-        priority: "low",
-        tags: ["Health", "Exercise"],
-      },
-      {
-        id: 2,
-        title: "Read a book",
-        description: "Finish reading Atomic Habits.",
-        completed: true,
-        createdAt: "2024-02-28T09:00:00Z",
-        dueDate: "2024-03-01T22:00:00Z",
-        priority: "medium",
-        tags: ["Learning", "Self-Improvement"],
-      },
-    ],
-  },
-];
+import {
+  fetchCollections,
+  toggleFavorite,
+  toggleFavoriteOptimistic,
+} from "./../features/collectionSlice";
+import Modal from "../components/Modal";
+import CollectionForm from "../components/CollectionForm";
 
 export default function Home() {
-  const [collections, setCollections] = useState(collectionsData);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  const toggleFavorite = (id) => {
-    setCollections(
-      collections.map((collection) =>
-        collection.id === id
-          ? { ...collection, favorite: !collection.favorite }
-          : collection
-      )
+  const dispatch = useDispatch();
+  const { collections } = useSelector((state) => state.collections);
+  const handleFavoriteToggle = (collection) => {
+    dispatch(toggleFavoriteOptimistic({ collectionId: collection._id })); // Optimistic update
+    dispatch(
+      toggleFavorite({
+        collectionId: collection._id,
+        favorite: collection.favorite,
+      })
     );
   };
+
+  useEffect(() => {
+    dispatch(fetchCollections());
+  }, [dispatch]);
 
   const filteredCollections = showFavoritesOnly
     ? collections.filter((collection) => collection.favorite)
@@ -129,7 +79,7 @@ export default function Home() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredCollections.map((collection) => (
           <div
-            key={collection.id}
+            key={collection._id}
             className="py-8 px-5 rounded-xl shadow-lg bg-light-card dark:bg-gray-900
                        text-light-foreground dark:text-dark-foreground 
                        hover:scale-105 transition-transform cursor-pointer relative"
@@ -137,7 +87,7 @@ export default function Home() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                toggleFavorite(collection.id);
+                handleFavoriteToggle(collection);
               }}
               className="absolute top-2 right-2"
             >
@@ -157,11 +107,20 @@ export default function Home() {
           className="px-5 py-8 rounded-xl shadow-lg bg-light-secondary dark:bg-dark-secondary 
                      flex justify-center items-center cursor-pointer
                      hover:scale-105 transition-transform"
+          onClick={() => setIsModalOpen(true)}
         >
           <span className="text-3xl text-light-foreground dark:text-dark-foreground">
             +
           </span>
         </div>
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Add Collection"
+        >
+          <CollectionForm onClose={() => setIsModalOpen(false)} />
+        </Modal>
       </div>
     </div>
   );

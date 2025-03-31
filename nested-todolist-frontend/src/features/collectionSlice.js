@@ -3,6 +3,7 @@ import {
   getAllCollections,
   createCollection,
   deleteCollection,
+  togglefavorite,
 } from "../services/collectionService";
 
 export const fetchCollections = createAsyncThunk(
@@ -12,6 +13,20 @@ export const fetchCollections = createAsyncThunk(
       return await getAllCollections();
     } catch (error) {
       return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const toggleFavorite = createAsyncThunk(
+  "collections/toggleFavorite",
+  async ({ collectionId, favorite }, { rejectWithValue }) => {
+    try {
+      const response = await togglefavorite(collectionId, favorite);
+      return response;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to update favorite status"
+      );
     }
   }
 );
@@ -46,6 +61,16 @@ const collectionSlice = createSlice({
     loading: false,
     error: null,
   },
+  reducers: {
+    toggleFavoriteOptimistic: (state, action) => {
+      const { collectionId } = action.payload;
+      const collection = state.collections.find((c) => c._id === collectionId);
+      if (collection) {
+        collection.favorite = !collection.favorite;
+      }
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchCollections.pending, (state) => {
@@ -67,8 +92,21 @@ const collectionSlice = createSlice({
         state.collections = state.collections.filter(
           (c) => c._id !== action.payload
         );
+      })
+      .addCase(toggleFavorite.fulfilled, (state, action) => {
+        const updatedCollection = action.payload;
+        console.log(updatedCollection);
+        const index = state.collections.findIndex(
+          (c) => c._id === updatedCollection._id
+        );
+        if (index !== -1) {
+          state.collections[index] = {
+            ...state.collections[index],
+            updatedCollection,
+          };
+        }
       });
   },
 });
-
+export const { toggleFavoriteOptimistic } = collectionSlice.actions;
 export default collectionSlice.reducer;

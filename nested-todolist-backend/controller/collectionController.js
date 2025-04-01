@@ -5,11 +5,11 @@ exports.getAllCollections = async (req, res) => {
   try {
     const collections = await Collection.aggregate([
       {
-        $match: { userId: req.user._id }, // Match collections for the logged-in user
+        $match: { userId: req.user._id },
       },
       {
         $lookup: {
-          from: "tasks", // The name of the Task collection in MongoDB
+          from: "tasks",
           localField: "tasks",
           foreignField: "_id",
           as: "tasks",
@@ -17,7 +17,7 @@ exports.getAllCollections = async (req, res) => {
       },
       {
         $addFields: {
-          totalTasks: { $size: "$tasks" }, // Calculate the total number of tasks
+          totalTasks: { $size: "$tasks" },
           completedTasks: {
             $size: {
               $filter: {

@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import Modal from "./Modal";
+import { removeCollection } from "../features/collectionSlice";
 
 export default function CollectionList({ collection }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  const handleDelete = async () => {};
+  const handleDelete = async (collection) => {
+    const response = await dispatch(removeCollection(collection._id));
+    console.log(response);
+  };
   return (
     <>
       <div className="flex items-center justify-between p-4 bg-light-background dark:bg-dark-background rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -35,7 +39,7 @@ export default function CollectionList({ collection }) {
             <div></div>
           </Modal>
           <button
-            onClick={handleDelete}
+            onClick={() => handleDelete(collection)}
             className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-300"
             aria-label="Delete Collection"
           >

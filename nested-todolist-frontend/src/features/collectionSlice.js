@@ -32,7 +32,7 @@ export const toggleFavorite = createAsyncThunk(
 );
 
 export const addCollection = createAsyncThunk(
-  "collections/add",
+  "collections/addCollection",
   async (collectionData, { rejectWithValue }) => {
     try {
       return await createCollection(collectionData);
@@ -43,7 +43,7 @@ export const addCollection = createAsyncThunk(
 );
 
 export const removeCollection = createAsyncThunk(
-  "collections/delete",
+  "collections/removeCollection",
   async (collectionId, { rejectWithValue }) => {
     try {
       await deleteCollection(collectionId);
@@ -86,7 +86,7 @@ const collectionSlice = createSlice({
         state.loading = false;
       })
       .addCase(addCollection.fulfilled, (state, action) => {
-        state.collections.push(action.payload);
+        state.collections.push(action.payload.data);
       })
       .addCase(removeCollection.fulfilled, (state, action) => {
         state.collections = state.collections.filter(
@@ -95,7 +95,6 @@ const collectionSlice = createSlice({
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         const updatedCollection = action.payload;
-        console.log(updatedCollection);
         const index = state.collections.findIndex(
           (c) => c._id === updatedCollection._id
         );

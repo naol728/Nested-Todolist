@@ -4,7 +4,7 @@ export default function Avatar({ src, alt, onClick }) {
       className="flex items-center space-x-3 cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative w-10 h-10">
+      <div className="relative size-8 sm:w-10 sm:h-10">
         <img
           src={
             src ||

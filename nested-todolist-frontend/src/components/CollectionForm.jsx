@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
+import { useDispatch } from "react-redux";
 
-export default function CollectionForm({ onSubmit, initialData, onClose }) {
-  const [collection, setCollection] = useState(
-    initialData || { name: "", icon: "", favorite: false }
-  );
+import { addCollection } from "../features/collectionSlice";
 
+export default function CollectionForm({ onClose }) {
+  const [collection, setCollection] = useState({
+    name: "",
+    icon: "",
+    favorite: false,
+  });
+  const dispatch = useDispatch();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCollection((prev) => ({ ...prev, [name]: value }));
@@ -15,10 +20,11 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
     setCollection((prev) => ({ ...prev, favorite: !prev.favorite }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(collection); // Call parent function to save data
-    onClose(); // Close modal after submission
+    const result = await dispatch(addCollection(collection));
+    console.log(result);
+    onClose();
   };
 
   return (
@@ -26,11 +32,6 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
       onSubmit={handleSubmit}
       className="p-4 bg-white dark:bg-dark-card rounded-lg shadow-md space-y-4 w-full max-w-md"
     >
-      <h2 className="text-xl font-bold text-light-foreground dark:text-dark-foreground">
-        {initialData ? "Edit Collection" : "Add New Collection"}
-      </h2>
-
-      {/* Name Input */}
       <div>
         <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
           Collection Name
@@ -46,7 +47,6 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
         />
       </div>
 
-      {/* Icon Input */}
       <div>
         <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
           Collection Icon (Emoji)
@@ -61,7 +61,6 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
         />
       </div>
 
-      {/* Favorite Toggle */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-light-foreground dark:text-dark-foreground">
           Mark as Favorite
@@ -84,7 +83,6 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
         </Switch>
       </div>
 
-      {/* Submit & Cancel Buttons */}
       <div className="flex justify-end space-x-3">
         <button
           type="button"
@@ -97,7 +95,7 @@ export default function CollectionForm({ onSubmit, initialData, onClose }) {
           type="submit"
           className="px-4 py-2 bg-light-primary dark:bg-dark-primary text-white rounded-md hover:bg-blue-600 transition"
         >
-          {initialData ? "Update Collection" : "Add Collection"}
+          Add Collection
         </button>
       </div>
     </form>

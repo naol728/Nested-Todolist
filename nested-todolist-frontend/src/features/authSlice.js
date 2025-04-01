@@ -5,13 +5,6 @@ import {
   registerUser,
 } from "./../services/authService";
 
-const initialState = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
-  isAuthenticated: !!localStorage.getItem("token"),
-  loading: false,
-  error: null,
-};
-
 export const authenticateUser = createAsyncThunk(
   "auth/authenticate",
   async (_, { rejectWithValue }) => {
@@ -35,13 +28,13 @@ export const register = createAsyncThunk(
 );
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
-  async (_, thunkAPI) => {
+  async (_, rejectWithValue) => {
     try {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       return true;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error || "Logout failed");
+      return rejectWithValue(error || "Logout failed");
     }
   }
 );
@@ -50,7 +43,6 @@ export const loginUser = createAsyncThunk(
   async (credentials, rejectWithValue) => {
     try {
       const response = await loginuser(credentials);
-      console.log(response);
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response));
       return response.data;
@@ -59,6 +51,13 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+const initialState = {
+  user: JSON.parse(localStorage.getItem("user")),
+  isAuthenticated: !!localStorage.getItem("token"),
+  loading: false,
+  error: null,
+};
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -72,6 +71,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      localStorage.removeItem("user");
       localStorage.removeItem("token");
     },
   },

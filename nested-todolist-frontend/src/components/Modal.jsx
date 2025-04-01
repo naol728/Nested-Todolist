@@ -20,11 +20,9 @@ export default function Modal({ isOpen, onClose, title, children }) {
         >
           ✖
         </button>
-
         <h2 className="text-xl font-semibold text-light-foreground dark:text-dark-foreground mb-4">
           {title}
         </h2>
-
         {children}
       </div>
     </div>

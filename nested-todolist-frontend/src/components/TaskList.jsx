@@ -5,7 +5,6 @@ import {
   Trash2,
   Edit2,
   ChevronDown,
-  ChevronRight,
   X,
   Check,
   Calendar,
@@ -19,7 +18,7 @@ const TaskList = ({ collectionsData, id }) => {
         .filter((collection) => collection.id == id)
         .map((collection) => (
           <div key={collection.id} className="space-y-6">
-            {/* Collection Header */}
+           
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
                 {collection.name}
@@ -30,14 +29,13 @@ const TaskList = ({ collectionsData, id }) => {
               </button>
             </div>
 
-            {/* Tasks List */}
             <div className="space-y-4">
               {collection.tasks.map((task) => (
                 <div
                   key={task.id}
                   className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md"
                 >
-                  {/* Task Header */}
+                 
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-3">
                       <button
@@ -46,7 +44,7 @@ const TaskList = ({ collectionsData, id }) => {
                             ? "text-green-500"
                             : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                         }`}
-                        onClick={() => {}} // Placeholder for completion toggle
+                        onClick={() => {}} 
                       >
                         {task.completed ? (
                           <CheckCircle size={20} className="fill-current" />
@@ -77,26 +75,26 @@ const TaskList = ({ collectionsData, id }) => {
                     <div className="flex gap-2">
                       <button
                         className="p-2 text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {}} // Placeholder for edit
+                        onClick={() => {}} 
                       >
                         <Edit2 size={16} />
                       </button>
                       <button
                         className="p-2 text-gray-500 hover:text-red-500 dark:hover:text-red-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {}} // Placeholder for delete
+                        onClick={() => {}} 
                       >
                         <Trash2 size={16} />
                       </button>
                       <button
                         className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {}} // Placeholder for expand/collapse
+                        onClick={() => {}}
                       >
                         <ChevronDown size={16} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Task Description */}
+                 
                   <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 pl-8">
                     {task.description}
                   </p>
@@ -116,7 +114,7 @@ const TaskList = ({ collectionsData, id }) => {
                     </div>
                   )}
 
-                  {/* Subtasks Section */}
+                  
                   {task.subtasks && task.subtasks.length > 0 && (
                     <div className="mt-4 pl-8">
                       <div className="flex items-center justify-between mb-3">
@@ -145,7 +143,7 @@ const TaskList = ({ collectionsData, id }) => {
                                     ? "text-green-500"
                                     : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                 }`}
-                                onClick={() => {}} // Placeholder for completion toggle
+                                onClick={() => {}} 
                               >
                                 {subtask.completed ? (
                                   <CheckCircle
@@ -169,13 +167,13 @@ const TaskList = ({ collectionsData, id }) => {
                             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               <button
                                 className="p-1 text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 rounded-full"
-                                onClick={() => {}} // Placeholder for edit
+                                onClick={() => {}} 
                               >
                                 <Edit2 size={14} />
                               </button>
                               <button
                                 className="p-1 text-gray-500 hover:text-red-500 dark:hover:text-red-400 rounded-full"
-                                onClick={() => {}} // Placeholder for delete
+                                onClick={() => {}} 
                               >
                                 <Trash2 size={14} />
                               </button>

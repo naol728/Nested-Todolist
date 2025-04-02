@@ -4,6 +4,7 @@ import { FiStar } from "react-icons/fi";
 import { Switch } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCapitalizedFirstName } from "../utils/formatString";
+import { useNavigate } from "react-router";
 import {
   fetchCollections,
   toggleFavorite,
@@ -17,6 +18,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { collections } = useSelector((state) => state.collections);
   const handleFavoriteToggle = (collection) => {
     dispatch(toggleFavoriteOptimistic({ collectionId: collection._id })); // Optimistic update
@@ -83,6 +85,7 @@ export default function Home() {
             className="py-8 px-5 rounded-xl shadow-lg bg-light-card dark:bg-gray-900
                        text-light-foreground dark:text-dark-foreground 
                        hover:scale-105 transition-transform cursor-pointer relative"
+            onClick={() => navigate(`/dashboard/${collection._id}`)}
           >
             <button
               onClick={(e) => {

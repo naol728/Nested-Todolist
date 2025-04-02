@@ -59,19 +59,25 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U4Z
 "favorite":false
 }
 
+### get a task to the collection 
+get http://127.0.0.1:5000/api/tasks/67ea861c94511ca21743da53
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U3ZWU0NWNlNTk3ZWQ1YzczYjA4ZDAiLCJpYXQiOjE3NDM1ODE1NjgsImV4cCI6MTc0NDE4NjM2OH0.n-wHyHnr-bR7-kvJGA8y7IO-jvhsnZFe5hBfEKPELTs
+
+
+
 ### add a task to the collection 
 post http://127.0.0.1:5000/api/tasks/67ea861c94511ca21743da53
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U3ZWU0NWNlNTk3ZWQ1YzczYjA4ZDAiLCJpYXQiOjE3NDM1ODE1NjgsImV4cCI6MTc0NDE4NjM2OH0.n-wHyHnr-bR7-kvJGA8y7IO-jvhsnZFe5hBfEKPELTs
 
 {
-  "_id": "67e9009a579ce1e0b357b7f1",
-  "title": "go to gym",
-  "description": "do 20 push up",
-  "priority": "medium",
-  "completed": false,
-  "subtasks": [],
-  "__v": 0
+  "title": "finishing frontend",
+  "description": "do it with ract",
+  "priority": "high",
+  "completed": true,
+  "subtasks": []
+
 }
 
 ### get a single task

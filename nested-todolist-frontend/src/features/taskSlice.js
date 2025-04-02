@@ -14,10 +14,10 @@ export const fetchTasks = createAsyncThunk(
 
 export const addTask = createAsyncThunk(
   "tasks/add",
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, taskData }, { rejectWithValue }) => {
     try {
-      console.log(id, data);
-      return await createTask(id, data);
+      console.log(id, taskData);
+      return await createTask(id, taskData);
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -40,22 +40,22 @@ const taskSlice = createSlice({
   name: "tasks",
   initialState: {
     tasks: [],
-    loading: false,
+    loadingtask: false,
     error: null,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTasks.pending, (state) => {
-        state.loading = true;
+        state.loadingtask = true;
         state.error = null;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.tasks = action.payload;
-        state.loading = false;
+        state.loadingtask = false;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
         state.error = action.payload;
-        state.loading = false;
+        state.loadingtask = false;
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.tasks.push(action.payload);

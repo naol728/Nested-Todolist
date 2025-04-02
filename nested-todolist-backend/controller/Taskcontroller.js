@@ -5,7 +5,6 @@ exports.getallTasks = async (req, res) => {
   try {
     const { collectionId } = req.params;
 
-    // Check if collection exists and belongs to the user
     const collection = await Collection.findOne({
       _id: collectionId,
       userId: req.user._id,
@@ -18,8 +17,29 @@ exports.getallTasks = async (req, res) => {
     }
 
     // Fetch all tasks linked to this collection
-    const tasks = await Task.find({ collectionId }).populate("subtasks");
-
+    const tasks = await Task.aggregate([
+      {
+        $match: { parentId: new mongoose.Types.ObjectId(collectionId) }, // Match tasks under the collection
+      },
+      {
+        $graphLookup: {
+          from: "tasks", // The Task collection
+          startWith: "$_id", // Start with the tasks in the collection
+          connectFromField: "_id", // Connect from the task's ID
+          connectToField: "subtasks", // Connect to the subtasks field
+          as: "allSubtasks", // Output all tasks (including subtasks) into this field
+        },
+      },
+      {
+        $lookup: {
+          from: "tasks", // Populate the subtasks field
+          localField: "subtasks",
+          foreignField: "_id",
+          as: "subtasks",
+        },
+      },
+    ]);
+    console.log(tasks);
     res.status(200).json(tasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -28,7 +48,8 @@ exports.getallTasks = async (req, res) => {
 exports.postTask = async (req, res) => {
   try {
     const { collectionId } = req.params;
-    const { title, description, priority, completed } = req.body;
+    const { title, description, priority, completed, dueDate, subtasks } =
+      req.body;
 
     // Check if the collection exists and belongs to the user
     const collection = await Collection.findOne({
@@ -47,8 +68,10 @@ exports.postTask = async (req, res) => {
       title,
       description,
       priority,
+      parentId: collectionId,
       completed,
-      collectionId, // Associate task with collection
+      dueDate,
+      subtasks, // Associate task with collection
     });
 
     await task.save();

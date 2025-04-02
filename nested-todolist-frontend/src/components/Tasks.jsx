@@ -5,13 +5,7 @@ import { IoMdAdd, IoIosArrowBack } from "react-icons/io";
 import { Link, useParams } from "react-router";
 import Modal from "./Modal";
 import TaskList from "./TaskList";
-import {
-  Calendar,
-  CheckCircle,
-  Circle,
-  LoaderPinwheel,
-  MoreVertical,
-} from "lucide-react";
+import { LoaderPinwheel } from "lucide-react";
 import TaskItem from "./TaskItem";
 import {
   fetchCollection,
@@ -20,7 +14,8 @@ import {
 } from "../features/collectionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TaskForm from "./Taskform";
-import { addTask } from "../features/taskSlice";
+import { addTask, fetchTasks } from "../features/taskSlice";
+import SubtaskList from "./SubtaskList";
 
 // const collectionsData = [
 //   {
@@ -151,13 +146,11 @@ export default function Tasks() {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-  const { collection, loading } = useSelector((state) => state.collections);
-  console.log(collection);
-  const priorityColors = {
-    high: "bg-red-500 text-white",
-    medium: "bg-yellow-500 text-white",
-    low: "bg-green-500 text-white",
-  };
+  const { collection, collections, loading } = useSelector(
+    (state) => state.collections
+  );
+  const { tasks, loadingtask } = useSelector((state) => state.tasks);
+
   const handleFavoriteToggle = () => {
     dispatch(toggleFavoriteOptimistic({ collectionId: id })); // Optimistic update
     dispatch(
@@ -169,7 +162,8 @@ export default function Tasks() {
   };
   const handleAddtask = async (data) => {
     try {
-      const response = await dispatch(addTask({ id, data }));
+      const taskData = { ...data, parentId: id };
+      const response = await dispatch(addTask({ id, taskData }));
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -220,11 +214,12 @@ export default function Tasks() {
   useEffect(() => {
     async function fetchCollectionid() {
       await dispatch(fetchCollection(id));
+      await dispatch(fetchTasks(id));
     }
     fetchCollectionid();
   }, [id, dispatch]);
 
-  if (loading)
+  if (loading || loadingtask)
     return (
       <div className="flex justify-center items-center h-full">
         <LoaderPinwheel />
@@ -270,58 +265,20 @@ export default function Tasks() {
         <div className="flex space-y-3 flex-col  ">
           <div className="text-sm font-semibold">
             {" "}
-            {collection?.totalTasks} tasks | {collection?.completedTasks}{" "}
+            {collections.find((el) => el._id == id)?.totalTasks} tasks |{" "}
+            {collections.find((el) => el._id == id)?.completedTasks}{" "}
           </div>
           <div className="ml-2">
             <div className="p-6 space-y-4">
               <div className="p-6">
-                {collection?.tasks.map((task) => (
+                {tasks.map((task) => (
                   <div key={task._id} className="mb-6">
-                    <div className="flex items-center justify-between px-4 py-3 rounded-lg shadow-md bg-light-card border border-light-border dark:bg-dark-card dark:border-dark-border min-w-96 transition hover:shadow-lg">
-                      <div className="flex items-center gap-3">
-                        {task.completed ? (
-                          <CheckCircle className="text-green-500 w-5 h-5" />
-                        ) : (
-                          <Circle className="text-gray-400 w-5 h-5" />
-                        )}
-
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-light-foreground dark:text-dark-foreground">
-                            {task.title}
-                          </span>
-                          <span className="text-sm text-light-secondary dark:text-dark-muted">
-                            {task.description}
-                          </span>
-
-                          {task.dueDate && (
-                            <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              <Calendar className="w-4 h-4" />
-                              <span>{task.dueDate}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={`px-2 py-1 text-xs font-bold rounded-full ${
-                            priorityColors[task.priority]
-                          }`}
-                        >
-                          {task.priority}
-                        </span>
-
-                        <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition">
-                          <MoreVertical className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* <div className="ml-4">
-                      {collection.subtasks.map((subtask) => (
+                    <SubtaskList task={task} />
+                    <div className="ml-4">
+                      {task.subtasks.map((subtask) => (
                         <TaskItem key={subtask._id} task={subtask} />
                       ))}
-                    </div> */}
+                    </div>
                   </div>
                 ))}
               </div>

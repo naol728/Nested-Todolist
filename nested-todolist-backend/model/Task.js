@@ -10,6 +10,7 @@ const taskSchema = new mongoose.Schema({
   },
   completed: { type: Boolean, default: false },
   parentId: { type: mongoose.Schema.Types.ObjectId, ref: "Collection" },
+  dueDate:{type:Date},
   subtasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 });
 

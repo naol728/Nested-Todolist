@@ -1,30 +1,40 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllTasks, deleteTask } from "../services/taskService";
+import { getAllTasks, deleteTask, createTask } from "../services/taskService";
 
-export const fetchTasks = createAsyncThunk("tasks/fetch", async (collectionId, { rejectWithValue }) => {
-  try {
-    return await getAllTasks(collectionId);
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const fetchTasks = createAsyncThunk(
+  "tasks/fetch",
+  async (collectionId, { rejectWithValue }) => {
+    try {
+      return await getAllTasks(collectionId);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
 
-// export const addTask = createAsyncThunk("tasks/add", async ({ collectionId, taskData }, { rejectWithValue }) => {
-//   try {
-//     return await postTask(collectionId, taskData);
-//   } catch (error) {
-//     return rejectWithValue(error.response.data);
-//   }
-// });
-
-export const removeTask = createAsyncThunk("tasks/delete", async (taskId, { rejectWithValue }) => {
-  try {
-    await deleteTask(taskId);
-    return taskId;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
+export const addTask = createAsyncThunk(
+  "tasks/add",
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      console.log(id, data);
+      return await createTask(id, data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
+
+export const removeTask = createAsyncThunk(
+  "tasks/delete",
+  async (taskId, { rejectWithValue }) => {
+    try {
+      await deleteTask(taskId);
+      return taskId;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const taskSlice = createSlice({
   name: "tasks",
@@ -47,9 +57,9 @@ const taskSlice = createSlice({
         state.error = action.payload;
         state.loading = false;
       })
-    //   .addCase(addTask.fulfilled, (state, action) => {
-    //     state.tasks.push(action.payload);
-    //   })
+      .addCase(addTask.fulfilled, (state, action) => {
+        state.tasks.push(action.payload);
+      })
       .addCase(removeTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter((task) => task._id !== action.payload);
       });

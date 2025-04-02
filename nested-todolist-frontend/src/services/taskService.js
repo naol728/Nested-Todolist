@@ -1,8 +1,6 @@
 import apiClient from "./apiClient";
 
-
-
-// task related stufs 
+// task related stufs
 const TASK_ENDPOINT = "/tasks";
 
 export const getAllTasks = async (collectionId) => {
@@ -16,12 +14,19 @@ export const getTask = async (taskId) => {
 };
 
 export const createTask = async (collectionId, taskData) => {
-  const response = await apiClient.post(`${TASK_ENDPOINT}/${collectionId}`, taskData);
+  console.log(collectionId, taskData);
+  const response = await apiClient.post(
+    `${TASK_ENDPOINT}/${collectionId}`,
+    taskData
+  );
   return response.data;
 };
 
 export const updateTask = async (taskId, taskData) => {
-  const response = await apiClient.put(`${TASK_ENDPOINT}/single/${taskId}`, taskData);
+  const response = await apiClient.put(
+    `${TASK_ENDPOINT}/single/${taskId}`,
+    taskData
+  );
   return response.data;
 };
 
@@ -31,6 +36,9 @@ export const deleteTask = async (taskId) => {
 };
 
 export const addSubtask = async (taskId, subtaskData) => {
-  const response = await apiClient.post(`${TASK_ENDPOINT}/subtask/${taskId}`, subtaskData);
+  const response = await apiClient.post(
+    `${TASK_ENDPOINT}/subtask/${taskId}`,
+    subtaskData
+  );
   return response.data;
 };

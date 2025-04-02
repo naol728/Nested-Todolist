@@ -116,7 +116,7 @@ const collectionSlice = createSlice({
           };
         }
       })
-      .addCase(fetchCollection.pending, (state, action) => {
+      .addCase(fetchCollection.pending, (state) => {
         state.loading = true;
         state.error = null;
       })

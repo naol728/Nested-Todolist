@@ -1,276 +1,108 @@
-import React, { useEffect, useState } from "react";
-import Button from "./Button";
-import { FiStar } from "react-icons/fi";
-import { IoMdAdd, IoIosArrowBack } from "react-icons/io";
-import { Link, useParams } from "react-router";
-import Modal from "./Modal";
-import TaskList from "./TaskList";
-import { Calendar, CheckCircle, Circle, Loader } from "lucide-react";
-import TaskItem from "./TaskItem";
-import {
-  fetchCollection,
-  toggleFavorite,
-  toggleFavoriteOptimistic,
-} from "../features/collectionSlice";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
 
-const collectionsData = [
-  {
-    id: 1,
-    name: "Work",
-    icon: "💼",
-    favorite: false,
-    totalTasks: 3,
-    completedTasks: 1,
-    tasks: [
-      {
-        id: 1001,
-        title: "Build API",
-        description: "Develop authentication API",
-        completed: false,
-        priority: "high",
-        subtasks: [
-          {
-            id: 2001,
-            title: "Design database schema",
-            description: "Develop authentication API",
-            completed: true,
-            subtasks: [
-              {
-                id: 3001,
-                title: "Create user table",
-                description: "Develop authentication API",
-                completed: true,
-                subtasks: [
-                  {
-                    id: 4001,
-                    title: "Define user model in MongoDB",
-                    completed: false,
-                    subtasks: [],
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: 2002,
-            title: "Implement JWT authentication",
-            completed: false,
-            subtasks: [],
-          },
-        ],
-      },
-      {
-        id: 8884,
-        title: "Implement JWT authentication",
-        completed: false,
-        subtasks: [],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Personal",
-    icon: "🧘",
-    favorite: true,
-    tasks: [
-      {
-        id: 1002,
-        title: "Morning Workout",
-        description: "Complete 30-minute exercise",
-        completed: false,
-        priority: "medium",
-        subtasks: [
-          {
-            id: 2003,
-            title: "Warm-up exercises",
-            completed: true,
-            subtasks: [
-              {
-                id: 3002,
-                title: "Stretching routine",
-                completed: true,
-                subtasks: [],
-              },
-            ],
-          },
-          {
-            id: 2004,
-            title: "Strength training",
-            completed: false,
-            subtasks: [
-              {
-                id: 3003,
-                title: "Upper body workout",
-                completed: false,
-                subtasks: [
-                  {
-                    id: 4002,
-                    title: "10 push-ups",
-                    completed: false,
-                    subtasks: [],
-                  },
-                  {
-                    id: 4003,
-                    title: "15 sit-ups",
-                    completed: false,
-                    subtasks: [
-                      {
-                        id: 4009,
-                        title: "step sis",
-                        completed: true,
-                        subtasks: [],
-                      },
-                    ],
-                  },
-                  {
-                    id: 40903,
-                    title: "15",
-                    completed: false,
-                    subtasks: [],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
-
-export default function Taskform() {
-  const { id } = useParams();
-  const [isopen, setIsopen] = useState(false);
-  const dispatch = useDispatch();
-  const { collection, loading } = useSelector((state) => state.collections);
-  console.log(collection);
-  // const { favorite, name, icon } = collection;
-
-  // const handleFavoriteToggle = () => {
-  //   dispatch(toggleFavoriteOptimistic({ collectionId: id })); // Optimistic update
-  //   // dispatch(
-  //   //   toggleFavorite({
-  //   //     collectionId: collection._id,
-  //   //     favorite: collection.favorite,
-  //   //   })
-  //   // );
-  // };
-
-  // const recursive = (parentid) => {
-  //   return (
-  //     <div>
-  //       {currentdata[0].tasks
-  //         .filter((tasks) => tasks?.parentId == parentid)
-  //         .map((task) => (
-  //           <div key={task.id} className="mb-2 ml-4">
-  //             <div className="w-full shadow-lg bg-light-card text-light-foreground dark:bg-dark-card dark:text-dark-foreground mb-2 px-4 py-1">
-  //               <button
-  //                 className={`mt-1 p-1 rounded-full ${
-  //                   task.completed
-  //                     ? "text-green-500"
-  //                     : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-  //                 }`}
-  //                 onClick={() => {}} // Placeholder for completion toggle
-  //               >
-  //                 {task.completed ? (
-  //                   <CheckCircle size={20} className="fill-current" />
-  //                 ) : (
-  //                   <Circle size={20} />
-  //                 )}
-  //               </button>
-  //               <div className="flex flex-col">
-  //                 <span> {task.title}</span>
-  //                 <span> {task.description}</span>
-  //               </div>
-  //               <div className="flex items-center gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
-  //                 <Calendar size={14} />
-  //                 <span>
-  //                   Due: {new Date(task.dueDate).toLocaleDateString()}
-  //                 </span>
-  //               </div>
-  //             </div>
-
-  //             {recursive(task.id)}
-  //           </div>
-  //         ))}
-  //     </div>
-  //   );
-  // };
-  const isfav = true;
-  useEffect(() => {
-    async function fetchCollectionid() {
-      await dispatch(fetchCollection(id));
+export default function TaskForm({ onSubmit, initialData, onClose }) {
+  const [task, setTask] = useState(
+    initialData || {
+      title: "",
+      description: "",
+      dueDate: "",
+      priority: "medium",
     }
-    fetchCollectionid();
-  }, [id, dispatch]);
+  );
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Loader />
-      </div>
-    );
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTask((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(task);
+    onClose();
+  };
+
   return (
-    <div className="flex flex-col h-full items-center">
-      <div className="flex flex-col space-y-3  min-w-[50%] ">
-        <div className="flex space-x-3 items-center -ml-3">
-          <Link to="/home">
-            <Button type="add">
-              <IoIosArrowBack />
-            </Button>
-          </Link>
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 bg-white dark:bg-dark-card rounded-lg shadow-md space-y-4 w-full max-w-md"
+    >
+      <h2 className="text-xl font-bold text-light-foreground dark:text-dark-foreground">
+        {initialData ? "Edit Task" : "Add New Task"}
+      </h2>
 
-          <span className="font-bold text-lg">{/* {icon} {name} */}</span>
-          <FiStar
-            className={`h-7 w-7 ${
-              isfav ? "text-yellow-500 fill-yellow-500" : "text-gray-400"
-            }`}
-          />
-        </div>
-
-        <div className="font-semibold flex space-x-3 items-center">
-          <Button type="add" onClick={() => setIsopen(!isopen)}>
-            <IoMdAdd />
-          </Button>
-          <span className="text-md"> add task</span>
-        </div>
-        {isopen ? (
-          <Modal isopen={isopen} setIsopen={setIsopen}>
-            this is the modal
-          </Modal>
-        ) : (
-          <></>
-        )}
-
-        <div className="flex space-y-3 flex-col  ">
-          <div className="text-sm font-semibold">
-            {" "}
-            {/* {totalTasks} tasks | {completedTasks}{" "} */}
-          </div>
-          <div className="ml-2">
-            <div className="p-6 space-y-4">
-              <div className="p-6">
-                {collectionsData
-                  .filter((task) => task.id == id)
-                  .map((collection) => (
-                    <div key={collection.id} className="mb-6">
-                      <h2 className="text-xl font-bold flex items-center">
-                        <span className="mr-2">{collection.icon}</span>{" "}
-                        {collection.name}
-                      </h2>
-                      <div className="ml-4">
-                        {collection.tasks.map((task) => (
-                          <TaskItem key={task.id} task={task} />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
+          Task Title
+        </label>
+        <input
+          type="text"
+          name="title"
+          value={task.title}
+          onChange={handleChange}
+          required
+          placeholder="Enter task title"
+          className="mt-1 p-2 w-full border border-gray-300 dark:border-gray-700 rounded-md bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground"
+        />
       </div>
-    </div>
+
+      <div>
+        <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
+          Task Description
+        </label>
+        <textarea
+          name="description"
+          value={task.description}
+          onChange={handleChange}
+          placeholder="Enter task description"
+          rows="3"
+          className="mt-1 p-2 w-full border border-gray-300 dark:border-gray-700 rounded-md bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground"
+        ></textarea>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
+          Due Date
+        </label>
+        <input
+          type="date"
+          name="dueDate"
+          value={task.dueDate}
+          onChange={handleChange}
+          className="mt-1 p-2 w-full border border-gray-300 dark:border-gray-700 rounded-md bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-light-foreground dark:text-dark-foreground">
+          Priority
+        </label>
+        <select
+          name="priority"
+          value={task.priority}
+          onChange={handleChange}
+          className="mt-1 p-2 w-full border border-gray-300 dark:border-gray-700 rounded-md bg-light-background dark:bg-dark-background text-light-foreground dark:text-dark-foreground"
+        >
+          <option value="high">🔥 High</option>
+          <option value="medium">⚡ Medium</option>
+          <option value="low">🌱 Low</option>
+        </select>
+      </div>
+
+      <div className="flex justify-end space-x-3">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-light-primary dark:bg-dark-primary text-white rounded-md hover:bg-blue-600 transition"
+        >
+          {initialData ? "Update Task" : "Add Task"}
+        </button>
+      </div>
+    </form>
   );
 }

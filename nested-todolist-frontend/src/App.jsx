@@ -3,10 +3,11 @@ import React, { Suspense, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import LoadingSpinner from "./components/LoadingSpinner";
-import Taskform from "./components/Taskform";
+
 import { authenticateUser } from "./features/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RedirectRoute from "./components/RedirectRoute";
+import Tasks from "./components/Tasks";
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Home = React.lazy(() => import("./pages/Home"));
 const MainLayout = React.lazy(() => import("./layouts/MainLayout"));
@@ -31,7 +32,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="home" element={<Home />} />
               <Route path="dashboard" element={<Dashboard />}>
-                <Route path="/dashboard/:id" element={<Taskform />} />
+                <Route path="/dashboard/:id" element={<Tasks />} />
               </Route>
             </Route>
           </Route>

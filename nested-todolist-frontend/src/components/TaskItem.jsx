@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MoreVertical, Edit, Trash2, PlusCircle } from "lucide-react";
 
-const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
+const TaskItem = ({ subtask, onEdit, onDelete, onAddSubtask }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [addDropdownOpen, setAddDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -33,9 +33,9 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
           className={`font-semibold text-lg flex  transition-colors duration-300 flex-col
           `}
         >
-          {task.completed ? "✅" : "⬜"} {task.title}
+          {subtask.completed ? "✅" : "⬜"} {subtask.title}
           <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">
-            {task.description}
+            {subtask.description}
           </p>
         </h3>
 
@@ -51,7 +51,7 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
             {addDropdownOpen && (
               <div className="absolute right-0 mt-2 w-40 bg-gray-300 dark:bg-gray-800 shadow-lg rounded-lg overflow-visible z-50">
                 <button
-                  onClick={() => onAddSubtask(task.id)}
+                  onClick={() => onAddSubtask(subtask._id)}
                   className="flex items-center px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
                 >
                   <PlusCircle size={16} className="mr-2" /> Add Subtask
@@ -71,13 +71,13 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-32 bg-gray-300 dark:bg-gray-800 shadow-lg rounded-lg overflow-visible z-50">
                 <button
-                  onClick={() => onEdit(task)}
+                  onClick={() => onEdit(subtask)}
                   className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
                 >
                   <Edit size={16} className="mr-2" /> Edit
                 </button>
                 <button
-                  onClick={() => onDelete(task.id)}
+                  onClick={() => onDelete(subtask._id)}
                   className="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
                 >
                   <Trash2 size={16} className="mr-2" /> Delete
@@ -88,9 +88,9 @@ const TaskItem = ({ task, onEdit, onDelete, onAddSubtask }) => {
         </div>
       </div>
 
-      {task.subtasks.length > 0 && (
+      {subtask.subtasks.length > 0 && (
         <div className="mt-3 pl-4   ">
-          {task.subtasks.map((subtask) => (
+          {subtask.subtasks.map((subtask) => (
             <TaskItem
               key={subtask.id}
               task={subtask}

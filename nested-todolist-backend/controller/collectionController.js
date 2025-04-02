@@ -60,6 +60,35 @@ exports.getCollection = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
+
+    // const collections = await Collection.aggregate([
+    //   {
+    //     $match: { userId: req.user._id, _id: id },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "tasks",
+    //       localField: "tasks",
+    //       foreignField: "_id",
+    //       as: "tasks",
+    //     },
+    //   },
+    //   {
+    //     $addFields: {
+    //       totalTasks: { $size: "$tasks" },
+    //       completedTasks: {
+    //         $size: {
+    //           $filter: {
+    //             input: "$tasks",
+    //             as: "task",
+    //             cond: { $eq: ["$$task.completed", true] }, // Count only completed tasks
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // ]);
+
     const collection = await Collection.findOne({
       _id: id,
       userId,

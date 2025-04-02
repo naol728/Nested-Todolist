@@ -4,6 +4,7 @@ import {
   createCollection,
   deleteCollection,
   togglefavorite,
+  getCollection,
 } from "../services/collectionService";
 
 export const fetchCollections = createAsyncThunk(
@@ -16,7 +17,16 @@ export const fetchCollections = createAsyncThunk(
     }
   }
 );
-
+export const fetchCollection = createAsyncThunk(
+  "collection/fetch",
+  async (collectionId, { rejectWithValue }) => {
+    try {
+      return await getCollection(collectionId);
+    } catch (error) {
+      return rejectWithValue(error.response);
+    }
+  }
+);
 export const toggleFavorite = createAsyncThunk(
   "collections/toggleFavorite",
   async ({ collectionId, favorite }, { rejectWithValue }) => {
@@ -60,6 +70,7 @@ const collectionSlice = createSlice({
     collections: [],
     loading: false,
     error: null,
+    collection: null,
   },
   reducers: {
     toggleFavoriteOptimistic: (state, action) => {
@@ -104,6 +115,19 @@ const collectionSlice = createSlice({
             updatedCollection,
           };
         }
+      })
+      .addCase(fetchCollection.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCollection.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        state.collection = action.payload;
+      })
+      .addCase(fetchCollection.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

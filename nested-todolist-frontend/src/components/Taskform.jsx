@@ -1,56 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import { FiStar } from "react-icons/fi";
 import { IoMdAdd, IoIosArrowBack } from "react-icons/io";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import Modal from "./Modal";
 import TaskList from "./TaskList";
-import { Calendar, CheckCircle, Circle } from "lucide-react";
+import { Calendar, CheckCircle, Circle, Loader } from "lucide-react";
 import TaskItem from "./TaskItem";
-
-// const coll = [
-//   {
-//     id: 1,
-//     name: "Design",
-//     icon: "🎨",
-//     favorite: false,
-//     totalTasks: 3,
-//     completedTasks: 1,
-//     tasks: [
-//       {
-//         id: 101,
-//         title: "task1",
-//         description: "Design the main UI wireframe in Figma.",
-//         completed: true,
-//         createdAt: "2024-03-01T10:30:00Z",
-//         dueDate: "2024-03-05T23:59:00Z",
-//         priority: "high",
-//         tags: ["UI/UX", "Figma"],
-//         parentId: null,
-//       },
-//       {
-//         id: 191,
-//         title: "bbbbbbb",
-//         description: "Design the main UI wireframe in Figma.",
-//         completed: false,
-//         createdAt: "2024-03-01T10:30:00Z",
-//         dueDate: "2024-03-05T23:59:00Z",
-//         priority: "high",
-//         tags: ["UI/UX", "Figma"],
-//         parentId: 101,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "Design",
-//     icon: "🎨",
-//     favorite: false,
-//     totalTasks: 3,
-//     completedTasks: 1,
-//     tasks: [],
-//   },
-// ];
+import {
+  fetchCollection,
+  toggleFavorite,
+  toggleFavoriteOptimistic,
+} from "../features/collectionSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const collectionsData = [
   {
@@ -180,11 +142,20 @@ const collectionsData = [
 export default function Taskform() {
   const { id } = useParams();
   const [isopen, setIsopen] = useState(false);
-  const { name, icon, totalTasks, completedTasks } = collectionsData.find(
-    (index) => index.id == id
-  );
-  const isfav = false;
-  // const currentdata = coll.filter((collection) => collection.id == id);
+  const dispatch = useDispatch();
+  const { collection, loading } = useSelector((state) => state.collections);
+  console.log(collection);
+  // const { favorite, name, icon } = collection;
+
+  // const handleFavoriteToggle = () => {
+  //   dispatch(toggleFavoriteOptimistic({ collectionId: id })); // Optimistic update
+  //   // dispatch(
+  //   //   toggleFavorite({
+  //   //     collectionId: collection._id,
+  //   //     favorite: collection.favorite,
+  //   //   })
+  //   // );
+  // };
 
   // const recursive = (parentid) => {
   //   return (
@@ -226,18 +197,31 @@ export default function Taskform() {
   //     </div>
   //   );
   // };
+  const isfav = true;
+  useEffect(() => {
+    async function fetchCollectionid() {
+      await dispatch(fetchCollection(id));
+    }
+    fetchCollectionid();
+  }, [id, dispatch]);
 
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader />
+      </div>
+    );
   return (
     <div className="flex flex-col h-full items-center">
       <div className="flex flex-col space-y-3  min-w-[50%] ">
         <div className="flex space-x-3 items-center -ml-3">
-          <Button type="add">
-            <IoIosArrowBack />
-          </Button>
-          <span className="font-bold text-lg">
-            {name}
-            {icon}
-          </span>
+          <Link to="/home">
+            <Button type="add">
+              <IoIosArrowBack />
+            </Button>
+          </Link>
+
+          <span className="font-bold text-lg">{/* {icon} {name} */}</span>
           <FiStar
             className={`h-7 w-7 ${
               isfav ? "text-yellow-500 fill-yellow-500" : "text-gray-400"
@@ -262,34 +246,19 @@ export default function Taskform() {
         <div className="flex space-y-3 flex-col  ">
           <div className="text-sm font-semibold">
             {" "}
-            {totalTasks} tasks | {completedTasks}{" "}
+            {/* {totalTasks} tasks | {completedTasks}{" "} */}
           </div>
           <div className="ml-2">
             <div className="p-6 space-y-4">
-              {/* <div className="p-6">
-                {collectionsData.map((collection) => (
-                  <div key={collection.id} className="mb-6">
-                    <h2 className="text-xl font-bold flex items-center">
-                      <span className="mr-2">{collection.icon}</span>{" "}
-                      {collection.name}
-                    </h2>
-                    <div className="ml-4">
-                      {collection.tasks.map((task) => (
-                        <TaskItem key={task.id} task={task} />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>{" "} */}
               <div className="p-6">
                 {collectionsData
                   .filter((task) => task.id == id)
                   .map((collection) => (
                     <div key={collection.id} className="mb-6">
-                      {/* <h2 className="text-xl font-bold flex items-center">
+                      <h2 className="text-xl font-bold flex items-center">
                         <span className="mr-2">{collection.icon}</span>{" "}
                         {collection.name}
-                      </h2> */}
+                      </h2>
                       <div className="ml-4">
                         {collection.tasks.map((task) => (
                           <TaskItem key={task.id} task={task} />

@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllTasks, deleteTask, createTask } from "../services/taskService";
+import {
+  getAllTasks,
+  deleteTask,
+  createTask,
+  addsubtask,
+} from "../services/taskService";
 
 export const fetchTasks = createAsyncThunk(
   "tasks/fetch",
@@ -14,10 +19,11 @@ export const fetchTasks = createAsyncThunk(
 
 export const addSubtask = createAsyncThunk(
   "tasks/addSubtask",
-  async ({ taskId, subtask }, { rejectWithValue }) => {
+  async ({ taskid, taskData }, { rejectWithValue }) => {
     try {
-      const response = await addSubtask(taskId, subtask);
-      return { taskId, subtask: response.data };
+      const response = await addsubtask(taskid, taskData);
+
+      return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -74,6 +80,10 @@ const taskSlice = createSlice({
       })
       .addCase(removeTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter((task) => task._id !== action.payload);
+      })
+      .addCase(addSubtask.fulfilled, (state, action) => {
+        console.log(action.payload);
+        // state.tasks = action.payload.task;
       });
   },
 });

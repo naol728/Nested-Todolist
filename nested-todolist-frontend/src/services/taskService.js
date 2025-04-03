@@ -35,10 +35,10 @@ export const deleteTask = async (taskId) => {
   return response.data;
 };
 
-export const addSubtask = async (taskId, subtaskData) => {
+export const addsubtask = async (taskid, taskData) => {
   const response = await apiClient.post(
-    `${TASK_ENDPOINT}/subtask/${taskId}`,
-    subtaskData
+    `${TASK_ENDPOINT}/single/${taskid}`,
+    taskData
   );
   return response.data;
 };

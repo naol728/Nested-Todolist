@@ -8,19 +8,44 @@ import {
   Trash2,
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addSubtask, removeTask } from "../features/taskSlice";
+import Modal from "./Modal";
+import TaskForm from "./Taskform";
 
 export default function SubtaskList({ subtask }) {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskid, setTaskid] = useState(null);
+  const dispatch = useDispatch();
   const priorityColors = {
     high: "bg-red-500 text-white",
     medium: "bg-yellow-500 text-white",
     low: "bg-green-500 text-white",
   };
 
-  const handleAddTask = (id) => {
-    console.log("Adding task to:", id);
+  const handleopen = (id) => {
+    setIsModalOpen(true);
+    setTaskid(id);
+  };
+
+  const handleAddtask = async (data) => {
+    try {
+      console.log(data);
+      const taskData = { ...data, parentId: taskid };
+      await dispatch(addSubtask({ taskid, taskData }));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deletesubtask = async (id) => {
+    try {
+      const response = await dispatch(removeTask(id));
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -82,12 +107,15 @@ export default function SubtaskList({ subtask }) {
                   <Edit size={16} className="mr-2" /> Edit
                 </button>
                 <button
-                  onClick={() => handleAddTask(subtask?._id)}
+                  onClick={() => handleopen(subtask._id)}
                   className="flex items-center px-4 py-2 text-sm text-green-600 dark:text-green-400 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
                 >
                   <CirclePlus size={20} className="mr-2" /> Add Subtask
                 </button>
-                <button className="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-400 dark:hover:bg-gray-700 w-full">
+                <button
+                  onClick={() => deletesubtask(subtask._id)}
+                  className="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
+                >
                   <Trash2 size={16} className="mr-2" /> Delete
                 </button>
               </div>
@@ -103,6 +131,13 @@ export default function SubtaskList({ subtask }) {
           ))}
         </div>
       )}
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <TaskForm
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={(data) => handleAddtask(data)}
+        />
+      </Modal>
     </div>
   );
 }

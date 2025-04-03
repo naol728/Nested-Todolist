@@ -17,131 +17,6 @@ import TaskForm from "./Taskform";
 import { addTask, fetchTasks } from "../features/taskSlice";
 import SubtaskList from "./SubtaskList";
 
-// const collectionsData = [
-//   {
-//     id: 1,
-//     name: "Work",
-//     icon: "💼",
-//     favorite: false,
-//     totalTasks: 3,
-//     completedTasks: 1,
-//     tasks: [
-//       {
-//         id: 1001,
-//         title: "Build API",
-//         description: "Develop authentication API",
-//         completed: false,
-//         priority: "high",
-//         subtasks: [
-//           {
-//             id: 2001,
-//             title: "Design database schema",
-//             description: "Develop authentication API",
-//             completed: true,
-//             subtasks: [
-//               {
-//                 id: 3001,
-//                 title: "Create user table",
-//                 description: "Develop authentication API",
-//                 completed: true,
-//                 subtasks: [
-//                   {
-//                     id: 4001,
-//                     title: "Define user model in MongoDB",
-//                     completed: false,
-//                     subtasks: [],
-//                   },
-//                 ],
-//               },
-//             ],
-//           },
-//           {
-//             id: 2002,
-//             title: "Implement JWT authentication",
-//             completed: false,
-//             subtasks: [],
-//           },
-//         ],
-//       },
-//       {
-//         id: 8884,
-//         title: "Implement JWT authentication",
-//         completed: false,
-//         subtasks: [],
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "Personal",
-//     icon: "🧘",
-//     favorite: true,
-//     tasks: [
-//       {
-//         id: 1002,
-//         title: "Morning Workout",
-//         description: "Complete 30-minute exercise",
-//         completed: false,
-//         priority: "medium",
-//         subtasks: [
-//           {
-//             id: 2003,
-//             title: "Warm-up exercises",
-//             completed: true,
-//             subtasks: [
-//               {
-//                 id: 3002,
-//                 title: "Stretching routine",
-//                 completed: true,
-//                 subtasks: [],
-//               },
-//             ],
-//           },
-//           {
-//             id: 2004,
-//             title: "Strength training",
-//             completed: false,
-//             subtasks: [
-//               {
-//                 id: 3003,
-//                 title: "Upper body workout",
-//                 completed: false,
-//                 subtasks: [
-//                   {
-//                     id: 4002,
-//                     title: "10 push-ups",
-//                     completed: false,
-//                     subtasks: [],
-//                   },
-//                   {
-//                     id: 4003,
-//                     title: "15 sit-ups",
-//                     completed: false,
-//                     subtasks: [
-//                       {
-//                         id: 4009,
-//                         title: "step sis",
-//                         completed: true,
-//                         subtasks: [],
-//                       },
-//                     ],
-//                   },
-//                   {
-//                     id: 40903,
-//                     title: "15",
-//                     completed: false,
-//                     subtasks: [],
-//                   },
-//                 ],
-//               },
-//             ],
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
 export default function Tasks() {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,7 +25,7 @@ export default function Tasks() {
     (state) => state.collections
   );
   const { tasks, loadingtask } = useSelector((state) => state.tasks);
-
+  console.log(tasks);
   const handleFavoriteToggle = () => {
     dispatch(toggleFavoriteOptimistic({ collectionId: id })); // Optimistic update
     dispatch(
@@ -169,47 +44,6 @@ export default function Tasks() {
       console.log(error);
     }
   };
-
-  // const recursive = (parentid) => {
-  //   return (
-  //     <div>
-  //       {currentdata[0].tasks
-  //         .filter((tasks) => tasks?.parentId == parentid)
-  //         .map((task) => (
-  //           <div key={task.id} className="mb-2 ml-4">
-  //             <div className="w-full shadow-lg bg-light-card text-light-foreground dark:bg-dark-card dark:text-dark-foreground mb-2 px-4 py-1">
-  //               <button
-  //                 className={`mt-1 p-1 rounded-full ${
-  //                   task.completed
-  //                     ? "text-green-500"
-  //                     : "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-  //                 }`}
-  //                 onClick={() => {}} // Placeholder for completion toggle
-  //               >
-  //                 {task.completed ? (
-  //                   <CheckCircle size={20} className="fill-current" />
-  //                 ) : (
-  //                   <Circle size={20} />
-  //                 )}
-  //               </button>
-  //               <div className="flex flex-col">
-  //                 <span> {task.title}</span>
-  //                 <span> {task.description}</span>
-  //               </div>
-  //               <div className="flex items-center gap-2 mt-1 text-sm text-gray-500 dark:text-gray-400">
-  //                 <Calendar size={14} />
-  //                 <span>
-  //                   Due: {new Date(task.dueDate).toLocaleDateString()}
-  //                 </span>
-  //               </div>
-  //             </div>
-
-  //             {recursive(task.id)}
-  //           </div>
-  //         ))}
-  //     </div>
-  //   );
-  // };
 
   useEffect(() => {
     async function fetchCollectionid() {
@@ -273,10 +107,10 @@ export default function Tasks() {
               <div className="p-6">
                 {tasks.map((task) => (
                   <div key={task._id} className="mb-6">
-                    <SubtaskList task={task} />
+                    <TaskItem task={task} />
                     <div className="ml-4">
                       {task.subtasks.map((subtask) => (
-                        <TaskItem key={subtask._id} task={subtask} />
+                        <SubtaskList key={subtask._id} subtask={subtask} />
                       ))}
                     </div>
                   </div>

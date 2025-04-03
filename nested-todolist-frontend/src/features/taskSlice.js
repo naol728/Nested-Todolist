@@ -12,6 +12,18 @@ export const fetchTasks = createAsyncThunk(
   }
 );
 
+export const addSubtask = createAsyncThunk(
+  "tasks/addSubtask",
+  async ({ taskId, subtask }, { rejectWithValue }) => {
+    try {
+      const response = await addSubtask(taskId, subtask);
+      return { taskId, subtask: response.data };
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const addTask = createAsyncThunk(
   "tasks/add",
   async ({ id, taskData }, { rejectWithValue }) => {

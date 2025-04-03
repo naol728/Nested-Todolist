@@ -5,6 +5,7 @@ exports.getallTasks = async (req, res) => {
   try {
     const { collectionId } = req.params;
 
+    // Verify that the collection exists and belongs to the user
     const collection = await Collection.findOne({
       _id: collectionId,
       userId: req.user._id,
@@ -16,32 +17,17 @@ exports.getallTasks = async (req, res) => {
         .json({ error: "Collection not found or unauthorized" });
     }
 
-    // Fetch all tasks linked to this collection
-    const tasks = await Task.aggregate([
-      {
-        $match: { parentId: new mongoose.Types.ObjectId(collectionId) }, // Match tasks under the collection
-      },
-      {
-        $graphLookup: {
-          from: "tasks", // The Task collection
-          startWith: "$_id", // Start with the tasks in the collection
-          connectFromField: "_id", // Connect from the task's ID
-          connectToField: "subtasks", // Connect to the subtasks field
-          as: "allSubtasks", // Output all tasks (including subtasks) into this field
-        },
-      },
-      {
-        $lookup: {
-          from: "tasks", // Populate the subtasks field
-          localField: "subtasks",
-          foreignField: "_id",
-          as: "subtasks",
-        },
-      },
-    ]);
+    const tasks = await Task.find({
+      parentId: collectionId,
+    }).populate({
+      path: "subtasks",
+      populate: { path: "subtasks" }, // Recursively populate subtasks
+    });
+
     console.log(tasks);
     res.status(200).json(tasks);
   } catch (error) {
+    console.error("Error fetching tasks:", error);
     res.status(500).json({ error: error.message });
   }
 };

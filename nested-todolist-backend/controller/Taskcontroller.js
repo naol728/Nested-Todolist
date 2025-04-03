@@ -5,7 +5,6 @@ exports.getallTasks = async (req, res) => {
   try {
     const { collectionId } = req.params;
 
-    // Verify that the collection exists and belongs to the user
     const collection = await Collection.findOne({
       _id: collectionId,
       userId: req.user._id,
@@ -17,11 +16,20 @@ exports.getallTasks = async (req, res) => {
         .json({ error: "Collection not found or unauthorized" });
     }
 
-    const tasks = await Task.find({
-      parentId: collectionId,
-    }).populate({
+    const tasks = await Task.find({ parentId: collectionId }).populate({
       path: "subtasks",
-      populate: { path: "subtasks" }, // Recursively populate subtasks
+      populate: {
+        path: "subtasks",
+        populate: {
+          path: "subtasks",
+          populate: {
+            path: "subtasks", // Continue populating recursively as needed
+          },
+          populate: {
+            path: "subtasks", // Continue populating recursively as needed
+          },
+        },
+      },
     });
 
     console.log(tasks);
@@ -154,7 +162,7 @@ exports.deleteTask = async (req, res) => {
 exports.addSubtask = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const { title, description, priority, completed } = req.body;
+    const { title, description, priority, completed, dueDate } = req.body;
 
     // Find the parent task
     const parentTask = await Task.findById(taskId);
@@ -168,8 +176,8 @@ exports.addSubtask = async (req, res) => {
       description,
       priority,
       completed,
-      parentId: taskId, // Associate with parent
-      // collectionId: parentTask.parentId, // Maintain the same collectionId
+      parentId: taskId,
+      dueDate,
     });
 
     // Save the subtask

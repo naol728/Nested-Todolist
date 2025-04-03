@@ -6,7 +6,6 @@ import { Link, useParams } from "react-router";
 import Modal from "./Modal";
 import TaskList from "./TaskList";
 import { LoaderPinwheel } from "lucide-react";
-import TaskItem from "./TaskItem";
 import {
   fetchCollection,
   toggleFavorite,
@@ -107,7 +106,7 @@ export default function Tasks() {
               <div className="p-6">
                 {tasks.map((task) => (
                   <div key={task._id} className="mb-6">
-                    <TaskItem task={task} />
+                    <TaskList task={task} />
                     <div className="ml-4">
                       {task.subtasks.map((subtask) => (
                         <SubtaskList key={subtask._id} subtask={subtask} />

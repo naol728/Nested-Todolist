@@ -118,12 +118,12 @@ exports.getTask = async (req, res) => {
 exports.updateTask = async (req, res) => {
   try {
     const { taskId } = req.params;
-    const { title, description, priority, completed } = req.body;
+    const { title, description, priority, completed, dueDate } = req.body;
 
     // Find and update the task
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
-      { title, description, priority, completed },
+      { title, description, priority, completed, dueDate },
       { new: true, runValidators: true }
     );
 

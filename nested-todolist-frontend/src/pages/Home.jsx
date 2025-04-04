@@ -40,11 +40,10 @@ export default function Home() {
 
   return (
     <div className="px-2  sm:px-10 bg-light-background dark:bg-dark-background min-h-screen">
-      {/* {user && ( */}
       <h2 className=" text-lg sm:text-2xl font-bold text-light-foreground dark:text-dark-foreground">
         👋 Hello {getCapitalizedFirstName(user?.name)}
       </h2>
-      {/* )} */}
+
       <div className="flex justify-between items-center mt-3 mb-6">
         <h2 className=" text-lg sm:text-2xl font-bold text-light-foreground dark:text-dark-foreground">
           🗂️ Collections

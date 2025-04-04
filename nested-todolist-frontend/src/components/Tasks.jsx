@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "./Button";
 import { FiStar } from "react-icons/fi";
 import { IoMdAdd, IoIosArrowBack } from "react-icons/io";
@@ -24,7 +24,11 @@ export default function Tasks() {
     (state) => state.collections
   );
   const { tasks, loadingtask } = useSelector((state) => state.tasks);
-  console.log(tasks);
+
+  const fetchData = useCallback(async () => {
+    dispatch(fetchCollection(id));
+    dispatch(fetchTasks(id));
+  }, [id, dispatch]);
   const handleFavoriteToggle = () => {
     dispatch(toggleFavoriteOptimistic({ collectionId: id })); // Optimistic update
     dispatch(
@@ -34,23 +38,22 @@ export default function Tasks() {
       })
     );
   };
-  const handleAddtask = async (data) => {
+
+  const handleAddTask = async (data) => {
     try {
       const taskData = { ...data, parentId: id };
       const response = await dispatch(addTask({ id, taskData }));
-      console.log(response);
+      if (response.meta.requestStatus === "fulfilled") {
+        fetchData();
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    async function fetchCollectionid() {
-      await dispatch(fetchCollection(id));
-      await dispatch(fetchTasks(id));
-    }
-    fetchCollectionid();
-  }, [id, dispatch]);
+    fetchData();
+  }, [fetchData]);
 
   if (loading || loadingtask)
     return (
@@ -58,9 +61,10 @@ export default function Tasks() {
         <LoaderPinwheel />
       </div>
     );
+
   return (
     <div className="flex flex-col h-full items-center">
-      <div className="flex flex-col space-y-3  min-w-[50%] ">
+      <div className="flex flex-col space-y-3 min-w-[50%]">
         <div className="flex space-x-3 items-center -ml-3">
           <Link to="/home">
             <Button type="add">
@@ -91,25 +95,28 @@ export default function Tasks() {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <TaskForm
             onClose={() => setIsModalOpen(false)}
-            onSubmit={(data) => handleAddtask(data)}
+            onSubmit={(data) => handleAddTask(data)}
           />
         </Modal>
 
-        <div className="flex space-y-3 flex-col  ">
+        <div className="flex space-y-3 flex-col">
           <div className="text-sm font-semibold">
-            {" "}
-            {collections.find((el) => el._id == id)?.totalTasks} tasks |{" "}
-            {collections.find((el) => el._id == id)?.completedTasks}{" "}
+            {collections.find((el) => el._id == id)?.totalTasks} tasks |
+            {collections.find((el) => el._id == id)?.completedTasks}
           </div>
           <div className="ml-2">
             <div className="p-6 space-y-4">
               <div className="p-6">
                 {tasks.map((task) => (
                   <div key={task._id} className="mb-6">
-                    <TaskList task={task} />
+                    <TaskList task={task} onSubtaskAdded={fetchData} />
                     <div className="ml-4">
                       {task.subtasks.map((subtask) => (
-                        <SubtaskList key={subtask._id} subtask={subtask} />
+                        <SubtaskList
+                          key={subtask._id}
+                          subtask={subtask}
+                          onSubtaskAdded={fetchData}
+                        />
                       ))}
                     </div>
                   </div>

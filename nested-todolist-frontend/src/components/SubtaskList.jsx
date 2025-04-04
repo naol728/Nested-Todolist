@@ -9,11 +9,11 @@ import {
 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addSubtask, removeTask } from "../features/taskSlice";
+import { addSubtask, removeTask, toggleChecked } from "../features/taskSlice";
 import Modal from "./Modal";
 import TaskForm from "./Taskform";
 
-export default function SubtaskList({ subtask }) {
+export default function SubtaskList({ subtask, onSubtaskAdded }) {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,20 +34,35 @@ export default function SubtaskList({ subtask }) {
     try {
       console.log(data);
       const taskData = { ...data, parentId: taskid };
-      await dispatch(addSubtask({ taskid, taskData }));
+
+      const response = await dispatch(addSubtask({ taskid, taskData }));
+
+      if (response.meta.requestStatus === "fulfilled") {
+        setIsModalOpen(false);
+        onSubtaskAdded();
+      }
     } catch (error) {
       console.log(error);
     }
   };
   const deletesubtask = async (id) => {
     try {
-      const response = await dispatch(removeTask(id));
-      console.log(response);
+      await dispatch(removeTask(id));
+      onSubtaskAdded();
     } catch (error) {
       console.log(error);
     }
   };
-
+  const handleChecked = async (task) => {
+    try {
+      const response = await dispatch(toggleChecked(task));
+      if (response.meta.requestStatus === "fulfilled") {
+        onSubtaskAdded();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -60,9 +75,11 @@ export default function SubtaskList({ subtask }) {
 
   return (
     <div className="space-y-2 mt-2">
-      {/* Main Subtask */}
       <div className="flex items-center justify-between px-4 py-3 rounded-lg shadow-md bg-light-card border border-light-border dark:bg-dark-card dark:border-dark-border min-w-96 transition hover:shadow-lg">
-        <div className="flex items-center gap-3">
+        <div
+          className="flex items-center gap-3"
+          onClick={() => handleChecked(subtask)}
+        >
           {subtask.completed ? (
             <CheckCircle className="text-green-500 w-5 h-5" />
           ) : (

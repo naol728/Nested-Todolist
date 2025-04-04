@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useParams } from "react-router";
 import { FiMenu } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCollections } from "../features/collectionSlice";
+import { fetchTasks } from "../features/taskSlice";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(fetchCollections());
-  }, [dispatch]);
+    dispatch(fetchTasks(id));
+  }, [id, dispatch]);
 
   return (
     <div className="flex min-h-screen bg-light-background dark:bg-dark-background transition-all duration-300">

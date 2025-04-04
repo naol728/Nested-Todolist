@@ -4,6 +4,7 @@ import {
   deleteTask,
   createTask,
   addsubtask,
+  updateTask,
 } from "../services/taskService";
 
 export const fetchTasks = createAsyncThunk(
@@ -53,6 +54,21 @@ export const removeTask = createAsyncThunk(
     }
   }
 );
+export const toggleChecked = createAsyncThunk(
+  "tasks/checked",
+  async (task, { rejectWithValue }) => {
+    try {
+      const taskData = {
+        ...task,
+        completed: !task.completed,
+      };
+      const response = await updateTask(task._id, taskData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const taskSlice = createSlice({
   name: "tasks",
@@ -83,7 +99,7 @@ const taskSlice = createSlice({
       })
       .addCase(addSubtask.fulfilled, (state, action) => {
         console.log(action.payload);
-        // state.tasks = action.payload.task;
+        // state.tasks.push(action.payload);
       });
   },
 });

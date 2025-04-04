@@ -11,9 +11,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import TaskForm from "./Taskform";
 import { useDispatch } from "react-redux";
-import { addSubtask, removeTask } from "../features/taskSlice";
+import { addSubtask, removeTask, toggleChecked } from "../features/taskSlice";
 
-export default function TaskList({ task }) {
+export default function TaskList({ task, onSubtaskAdded }) {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +28,12 @@ export default function TaskList({ task }) {
     try {
       console.log(data);
       const taskData = { ...data, parentId: taskid };
-      await dispatch(addSubtask({ taskid, taskData }));
+      const response = await dispatch(addSubtask({ taskid, taskData }));
+
+      if (response.meta.requestStatus === "fulfilled") {
+        onSubtaskAdded();
+        setIsModalOpen(false);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -40,7 +45,9 @@ export default function TaskList({ task }) {
   const deletetask = async (id) => {
     try {
       const response = await dispatch(removeTask(id));
-      console.log(response);
+      if (response.meta.requestStatus === "fulfilled") {
+        onSubtaskAdded();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -51,16 +58,28 @@ export default function TaskList({ task }) {
         setDropdownOpen(false);
       }
     }
-    // async function fetchCollectionid() {
-    //   await dispatch(fetchTasks(id));
-    // }
-    // fetchCollectionid();
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [taskid, dispatch]);
+  }, []);
+
+  const handleChecked = async (task) => {
+    try {
+      const response = await dispatch(toggleChecked(task));
+      if (response.meta.requestStatus === "fulfilled") {
+        onSubtaskAdded();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex items-center justify-between px-4 py-3 rounded-lg shadow-md bg-light-card border border-light-border dark:bg-dark-card dark:border-dark-border min-w-96 transition hover:shadow-lg">
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3"
+        onClick={() => handleChecked(task)}
+      >
         {task.completed ? (
           <CheckCircle className="text-green-500 w-5 h-5" />
         ) : (

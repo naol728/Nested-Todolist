@@ -32,7 +32,6 @@ exports.getallTasks = async (req, res) => {
       },
     });
 
-    console.log(tasks);
     res.status(200).json(tasks);
   } catch (error) {
     console.error("Error fetching tasks:", error);

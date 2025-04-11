@@ -13,7 +13,7 @@ import TaskForm from "./Taskform";
 import { useDispatch } from "react-redux";
 import { addSubtask, removeTask, toggleChecked } from "../features/taskSlice";
 
-export default function TaskList({ task, onSubtaskAdded }) {
+export default function TaskList({ task, onSubtaskAdded, handleEditTask }) {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +24,7 @@ export default function TaskList({ task, onSubtaskAdded }) {
     low: "bg-green-500 text-white",
   };
   const dispatch = useDispatch();
+
   const handleAddtask = async (data) => {
     try {
       console.log(data);
@@ -121,7 +122,7 @@ export default function TaskList({ task, onSubtaskAdded }) {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-32 bg-gray-300 dark:bg-gray-800 shadow-lg rounded-lg overflow-visible z-50">
               <button
-                // onClick={() =>}
+                onClick={() => handleEditTask(task)}
                 className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
               >
                 <Edit size={16} className="mr-2" /> Edit
@@ -141,6 +142,7 @@ export default function TaskList({ task, onSubtaskAdded }) {
             </div>
           )}
         </div>
+
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <TaskForm
             onClose={() => setIsModalOpen(false)}

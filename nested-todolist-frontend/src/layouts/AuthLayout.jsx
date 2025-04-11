@@ -5,5 +5,4 @@ export default function AuthLayout({ children }) {
         {children}
       </div>
     </div>
-  );
-}
+  )  }

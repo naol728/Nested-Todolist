@@ -5,6 +5,7 @@ import {
   createTask,
   addsubtask,
   updateTask,
+  getTask,
 } from "../services/taskService";
 
 export const fetchTasks = createAsyncThunk(
@@ -18,12 +19,36 @@ export const fetchTasks = createAsyncThunk(
   }
 );
 
+export const fetchTask = createAsyncThunk(
+  "tasks/fetchsingle",
+  async (taskid, { rejectWithValue }) => {
+    try {
+      const response = await getTask(taskid);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const addSubtask = createAsyncThunk(
   "tasks/addSubtask",
   async ({ taskid, taskData }, { rejectWithValue }) => {
     try {
       const response = await addsubtask(taskid, taskData);
 
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const editTask = createAsyncThunk(
+  "tasks/edit",
+  async ({ taskid, taskData }, { rejectWithValue }) => {
+    try {
+      const response = await updateTask(taskid, taskData);
       return response;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -76,6 +101,7 @@ const taskSlice = createSlice({
     tasks: [],
     loadingtask: false,
     error: null,
+    task: null,
   },
   extraReducers: (builder) => {
     builder
@@ -100,6 +126,15 @@ const taskSlice = createSlice({
       .addCase(addSubtask.fulfilled, (state, action) => {
         console.log(action.payload);
         // state.tasks.push(action.payload);
+      })
+      .addCase(fetchTask.pending, (state, action) => {
+        // state.task = action.payload;
+      })
+      .addCase(fetchTask.rejected, (state, action) => {
+        // state.task = action.payload;
+      })
+      .addCase(fetchTask.fulfilled, (state, action) => {
+        state.task = action.payload;
       });
   },
 });

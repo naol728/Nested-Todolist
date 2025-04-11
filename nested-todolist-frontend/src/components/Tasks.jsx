@@ -13,17 +13,18 @@ import {
 } from "../features/collectionSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TaskForm from "./Taskform";
-import { addTask, fetchTasks } from "../features/taskSlice";
+import { addTask, fetchTask, fetchTasks } from "../features/taskSlice";
 import SubtaskList from "./SubtaskList";
 
 export default function Tasks() {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const dispatch = useDispatch();
   const { collection, collections, loading } = useSelector(
     (state) => state.collections
   );
-  const { tasks, loadingtask } = useSelector((state) => state.tasks);
+  const { tasks, loadingtask, task } = useSelector((state) => state.tasks);
 
   const fetchData = useCallback(async () => {
     dispatch(fetchCollection(id));
@@ -37,6 +38,10 @@ export default function Tasks() {
         favorite: collection.favorite,
       })
     );
+  };
+
+  const handleFetchEditTask = async (task) => {
+    await dispatch(fetchTask(task._id));
   };
 
   const handleAddTask = async (data) => {
@@ -109,13 +114,18 @@ export default function Tasks() {
               <div className="p-6">
                 {tasks.map((task) => (
                   <div key={task._id} className="mb-6">
-                    <TaskList task={task} onSubtaskAdded={fetchData} />
+                    <TaskList
+                      task={task}
+                      onSubtaskAdded={fetchData}
+                      handleEditTask={handleFetchEditTask}
+                    />
                     <div className="ml-4">
                       {task.subtasks.map((subtask) => (
                         <SubtaskList
                           key={subtask._id}
                           subtask={subtask}
                           onSubtaskAdded={fetchData}
+                          handleEditTask={handleFetchEditTask}
                         />
                       ))}
                     </div>

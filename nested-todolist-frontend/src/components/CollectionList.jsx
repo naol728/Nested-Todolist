@@ -9,8 +9,7 @@ export default function CollectionList({ collection }) {
   const dispatch = useDispatch();
 
   const handleDelete = async (collection) => {
-    const response = await dispatch(removeCollection(collection._id));
-    console.log(response);
+    await dispatch(removeCollection(collection._id));
   };
   return (
     <>

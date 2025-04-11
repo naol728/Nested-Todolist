@@ -13,7 +13,11 @@ import { addSubtask, removeTask, toggleChecked } from "../features/taskSlice";
 import Modal from "./Modal";
 import TaskForm from "./Taskform";
 
-export default function SubtaskList({ subtask, onSubtaskAdded }) {
+export default function SubtaskList({
+  subtask,
+  onSubtaskAdded,
+  handleEditTask,
+}) {
   const dropdownRef = useRef(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -120,7 +124,10 @@ export default function SubtaskList({ subtask, onSubtaskAdded }) {
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-32 bg-gray-300 dark:bg-gray-800 shadow-lg rounded-lg overflow-visible z-50">
-                <button className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-700 w-full">
+                <button
+                  onClick={() => handleEditTask(subtask)}
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-700 w-full"
+                >
                   <Edit size={16} className="mr-2" /> Edit
                 </button>
                 <button

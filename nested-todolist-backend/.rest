@@ -117,4 +117,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U3Z
   "priority": "high",
   "completed": false
 }
+###mi
+
+post https://gossip-eta.vercel.app/api/comment
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2U3ZWU0NWNlNTk3ZWQ1YzczYjA4ZDAiLCJpYXQiOjE3NDM1ODE1NjgsImV4cCI6MTc0NDE4NjM2OH0.n-wHyHnr-bR7-kvJGA8y7IO-jvhsnZFe5hBfEKPELTs
+
+{
+    "text": "fuck gousip this is not from real goosip",
+    "insultId": "67c0b5cf1674df95b7f722ea",
+    "createdAt": "2025-02-27T19:02:07.128Z",
+    "updatedAt": "2025-02-27T19:02:07.128Z"
+    
+  }
 
